@@ -19,8 +19,7 @@
  */
 
 #include "libokcupid.h"
-#include "fb_blist.h"
-#include "fb_connection.h"
+#include "okc_connection.h"
 #include "okc_messages.h"
 
 /******************************************************************************/
@@ -138,7 +137,7 @@ static GList *okc_statuses(PurpleAccount *account)
 
 static gboolean okc_get_messages_failsafe(OkCupidAccount *oca)
 {
-	if (oka->last_messages_download_time < (time(NULL) - (60*5))) {
+	if (oca->last_messages_download_time < (time(NULL) - (60*5))) {
 		/* Messages haven't been downloaded in a while-
 		 * something is probably wrong */
 		purple_debug_warning("okcupid",
@@ -157,7 +156,7 @@ static void okc_login_cb(OkCupidAccount *oca, gchar *response, gsize len,
 	purple_connection_update_progress(oca->pc, _("Authenticating"), 2, 3);
 
 	/* ok, we're logged in now! */
-	purple_connection_set_state(fba->pc, PURPLE_CONNECTED);
+	purple_connection_set_state(oca->pc, PURPLE_CONNECTED);
 
 	/* This will kick off our long-poll message retrieval loop */
 	okc_get_messages(oca);
@@ -204,7 +203,7 @@ static void okc_login(PurpleAccount *account)
 
 static void okc_close(PurpleConnection *pc)
 {
-	FacebookAccount *fba;
+	OkCupidAccount *oca;
 	gchar *postdata;
 
 	purple_debug_info("okcupid", "disconnecting account\n");
@@ -231,7 +230,7 @@ static void okc_close(PurpleConnection *pc)
 	}*/
 
 	purple_debug_info("okcupid", "destroying %d incomplete connections\n",
-			g_slist_length(fba->conns));
+			g_slist_length(oca->conns));
 
 	while (oca->conns != NULL)
 		oca_connection_destroy(oca->conns->data);
@@ -240,7 +239,7 @@ static void okc_close(PurpleConnection *pc)
 		PurpleDnsQueryData *dns_query = oca->dns_queries->data;
 		purple_debug_info("okcupid", "canceling dns query for %s\n",
 					purple_dnsquery_get_host(dns_query));
-		oca->dns_queries = g_slist_remove(fba->dns_queries, dns_query);
+		oca->dns_queries = g_slist_remove(oca->dns_queries, dns_query);
 		purple_dnsquery_destroy(dns_query);
 	}
 
@@ -365,7 +364,7 @@ static PurplePluginInfo info = {
 	PURPLE_PRIORITY_DEFAULT, /* priority */
 	"prpl-bigbrownchunx-okcupid", /* id */
 	"OkCupid", /* name */
-	FACEBOOK_PLUGIN_VERSION, /* version */
+	OKCUPID_PLUGIN_VERSION, /* version */
 	N_("OkCupid Protocol Plugin"), /* summary */
 	N_("OkCupid Protocol Plugin"), /* description */
 	"Eion Robb <eionrobb@gmail.com>", /* author */
