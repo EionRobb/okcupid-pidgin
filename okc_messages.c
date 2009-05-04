@@ -33,7 +33,6 @@ struct _OkCupidOutgoingMessage {
 };
 
 static gboolean okc_send_im_fom(OkCupidOutgoingMessage *msg);
-static gboolean okc_get_new_messages(OkCupidAccount *oca);
 
 static void got_new_messages(OkCupidAccount *oca, gchar *data,
 		gsize data_len, gpointer userdata)
@@ -107,7 +106,7 @@ static gboolean fb_send_im_fom(OkCupidOutgoingMessage *msg)
 
 	encoded_message = g_strdup(purple_url_encode(msg->message));
 	encoded_recipient = g_strdup(purple_url_encode(msg->who));
-	postdate = g_strdup_printf("send=1&attempt=%d&rid=%d&recipient=%s&body=%s&rand=%18f",
+	postdata = g_strdup_printf("send=1&attempt=%d&rid=%d&recipient=%s&body=%s&rand=%18f",
 			msg->retry_count + 1,
 			msg->rid,
 			encoded_recipient,
