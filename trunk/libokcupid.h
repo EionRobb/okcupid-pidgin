@@ -74,6 +74,7 @@ typedef void (*OkCupidProxyCallbackFunc)(OkCupidAccount *oca, gchar *data, gsize
 struct _OkCupidAccount {
 	PurpleAccount *account;
 	PurpleConnection *pc;
+	GHashTable *hostname_ip_cache;
 	GSList *conns; /**< A list of all active FacebookConnections */
 	GSList *dns_queries;
 	GHashTable *cookie_table;

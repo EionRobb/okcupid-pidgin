@@ -30,11 +30,12 @@ struct _OkCupidOutgoingMessage {
 	gchar *message;
 	gint msg_id;
 	guint retry_count;
+	guint rid;
 };
 
-static gboolean okc_send_im_fom(OkCupidOutgoingMessage *msg);
+gboolean okc_send_im_fom(OkCupidOutgoingMessage *msg);
 
-static void got_new_messages(OkCupidAccount *oca, gchar *data,
+void got_new_messages(OkCupidAccount *oca, gchar *data,
 		gsize data_len, gpointer userdata)
 {
 	PurpleConnection *pc = userdata;
@@ -53,7 +54,7 @@ static void got_new_messages(OkCupidAccount *oca, gchar *data,
 	okc_get_new_messages(oca);
 }
 
-static gboolean okc_get_new_messages(OkCupidAccount *oca)
+gboolean okc_get_new_messages(OkCupidAccount *oca)
 {
 	time_t now;
 	gchar *fetch_url;
@@ -87,7 +88,7 @@ static gboolean okc_get_new_messages(OkCupidAccount *oca)
 	return FALSE;
 }
 
-static void okc_send_im_cb(FacebookAccount *fba, gchar *data, gsize data_len, gpointer user_data)
+void okc_send_im_cb(OkCupidAccount *oca, gchar *data, gsize data_len, gpointer user_data)
 {
 	OkCupidOutgoingMessage *msg = user_data;
 
@@ -98,7 +99,7 @@ static void okc_send_im_cb(FacebookAccount *fba, gchar *data, gsize data_len, gp
 	purple_debug_misc("okcupid", "sent im response: %s\n", data);
 }
 
-static gboolean fb_send_im_fom(OkCupidOutgoingMessage *msg)
+gboolean okc_send_im_fom(OkCupidOutgoingMessage *msg)
 {
 	gchar *encoded_message;
 	gchar *encoded_recipient;
@@ -123,10 +124,10 @@ static gboolean fb_send_im_fom(OkCupidOutgoingMessage *msg)
 
 int okc_send_im(PurpleConnection *pc, const gchar *who, const gchar *message, PurpleMessageFlags flags)
 {
-	FacebookOutgoingMessage *msg;
+	OkCupidOutgoingMessage *msg;
 
-	msg = g_new0(FacebookOutgoingMessage, 1);
-	msg->fba = pc->proto_data;
+	msg = g_new0(OkCupidOutgoingMessage, 1);
+	msg->oca = pc->proto_data;
 
 	/* convert html to plaintext, removing trailing spaces */
 	msg->message = purple_markup_strip_html(message);
@@ -145,88 +146,4 @@ int okc_send_im(PurpleConnection *pc, const gchar *who, const gchar *message, Pu
 	okc_send_im_fom(msg);
 
 	return strlen(message);
-}
-
-static void got_form_id_page(FacebookAccount *fba, gchar *data, gsize data_len, gpointer userdata)
-{
-	const gchar *start_text = "id=\"post_form_id\" name=\"post_form_id\" value=\"";
-	gchar *post_form_id;
-	gchar *channel_number;
-	gchar *tmp = NULL;
-	
-	/* NULL data crashes on Windows */
-	if (data == NULL)
-		data = "(null)";
-	
-	tmp = g_strstr_len(data, data_len, start_text);
-	if (tmp == NULL)
-	{
-		purple_debug_error("facebook", "couldn't find post_form_id\n");
-		purple_debug_info("facebook", "page content: %s\n", data);
-		/* Maybe they changed their HTML slightly? */
-		purple_connection_error_reason(fba->pc,
-				PURPLE_CONNECTION_ERROR_AUTHENTICATION_FAILED,
-				_("Error getting info from Facebook."));
-		return;
-	}
-	tmp += strlen(start_text);
-	post_form_id = g_strndup(tmp, strchr(tmp, '"') - tmp);
-
-	g_free(fba->post_form_id);
-	fba->post_form_id = post_form_id;
-
-	/* dodgy as search for channel server number */
-	if (!fba->channel_number)
-	{
-		start_text = "\", \"channel";
-		tmp = g_strstr_len(data, data_len, start_text);
-		if (tmp == NULL)
-		{
-			/* Some proxies strip whitepsace */
-			start_text = "\",\"channel";
-			tmp = g_strstr_len(data, data_len, start_text);
-			if (tmp == NULL)
-			{
-				/* TODO: Is it better to pick a random channel number or to disconnect? */
-				/* MARKCONFLICT (r283,r286) */
-				channel_number = g_strdup(purple_account_get_string(fba->account, "last_channel_number", ""));
-				if (channel_number[0] == '\0')
-				{
-					purple_debug_error("facebook", "couldn't find channel\n");
-					purple_debug_misc("facebook", "page content: %s\n", data);
-					purple_connection_error_reason(fba->pc,
-							PURPLE_CONNECTION_ERROR_NETWORK_ERROR,
-							_("Chat service currently unavailable."));
-					return;
-				}
-			}
-		}
-
-		if (tmp != NULL)
-		{
-			tmp += strlen(start_text);
-			channel_number = g_strndup(tmp, strchr(tmp, '"') - tmp);
-		}
-
-		purple_account_set_string(fba->account, "last_channel_number", channel_number);
-
-		g_free(fba->channel_number);
-		fba->channel_number = channel_number;
-	}
-
-	tmp = g_strdup_printf("visibility=true&post_form_id=%s", post_form_id);
-	fb_post_or_get(fba, FB_METHOD_POST, "apps.facebook.com", "/ajax/chat/settings.php", tmp, NULL, NULL, FALSE);
-	g_free(tmp);
-
-	/*
-	 * Now that we have a channel number we can start looping and
-	 * waiting for messages
-	 */
-	fb_get_new_messages(fba);
-}
-
-gboolean fb_get_post_form_id(FacebookAccount *fba)
-{
-	fb_post_or_get(fba, FB_METHOD_GET, NULL, "/home.php", NULL, got_form_id_page, NULL, FALSE);
-	return FALSE;
 }
