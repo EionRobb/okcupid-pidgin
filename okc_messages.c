@@ -78,7 +78,7 @@ gboolean okc_get_new_messages(OkCupidAccount *oca)
 
 	purple_debug_info("facebook", "getting new messages\n");
 
-	fetch_url = g_strdup_printf("/instantevents?rand=%18f", g_random_double());
+	fetch_url = g_strdup_printf("/instantevents?rand=0.%d", g_random_int());
 
 	okc_post_or_get(oca, OKC_METHOD_GET, NULL, fetch_url, NULL, got_new_messages, oca->pc, TRUE);
 	oca->last_messages_download_time = now;
@@ -107,12 +107,12 @@ gboolean okc_send_im_fom(OkCupidOutgoingMessage *msg)
 
 	encoded_message = g_strdup(purple_url_encode(msg->message));
 	encoded_recipient = g_strdup(purple_url_encode(msg->who));
-	postdata = g_strdup_printf("send=1&attempt=%d&rid=%d&recipient=%s&body=%s&rand=%18f",
+	postdata = g_strdup_printf("send=1&attempt=%d&rid=%d&recipient=%s&body=%s&rand=0.%d",
 			msg->retry_count + 1,
 			msg->rid,
 			encoded_recipient,
 			encoded_message,
-			g_random_double());
+			g_random_int());
 	g_free(encoded_message);
 	g_free(encoded_recipient);
 
