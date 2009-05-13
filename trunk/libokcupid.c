@@ -116,6 +116,7 @@ gchar *okc_strdup_withhtml(const gchar *src)
 
 static const char *okc_list_icon(PurpleAccount *account, PurpleBuddy *buddy)
 {
+	purple_debug_info("okcupid", "list_icon\n");
 	return "okcupid";
 }
 
@@ -124,13 +125,17 @@ static GList *okc_statuses(PurpleAccount *account)
 	GList *types = NULL;
 	PurpleStatusType *status;
 
+	purple_debug_info("okcupid", "statuses\n");
+
 	/* OkCupid people are either online, online with no IM, offline */
 	
-	status = purple_status_type_new_full(PURPLE_STATUS_AVAILABLE, NULL, _("Online"), FALSE, TRUE, FALSE);
+	status = purple_status_type_new_full(PURPLE_STATUS_AVAILABLE, NULL, NULL, TRUE, TRUE, FALSE);
 	types = g_list_append(types, status);
 
-	status = purple_status_type_new_full(PURPLE_STATUS_OFFLINE, NULL, _("Offline"), FALSE, TRUE, FALSE);
+	status = purple_status_type_new_full(PURPLE_STATUS_OFFLINE, NULL, NULL, TRUE, TRUE, FALSE);
 	types = g_list_append(types, status);
+
+	purple_debug_info("okcupid", "statuses return\n");
 
 	return types;
 }
@@ -168,6 +173,8 @@ static void okc_login(PurpleAccount *account)
 	OkCupidAccount *oca;
 	gchar *postdata, *encoded_username, *encoded_password;
 
+	purple_debug_info("okcupid", "login\n");
+
 	/* Create account and initialize state */
 	oca = g_new0(OkCupidAccount, 1);
 	oca->account = account;
@@ -192,6 +199,8 @@ static void okc_login(PurpleAccount *account)
 			encoded_username, encoded_password);
 	g_free(encoded_username);
 	g_free(encoded_password);
+	
+	purple_debug_info("okcupid", "about to call post_or_get\n");
 
 	okc_post_or_get(oca, OKC_METHOD_POST, "www.okcupid.com",
 			"/login", postdata, okc_login_cb, NULL, FALSE);
@@ -261,6 +270,12 @@ static gboolean plugin_unload(PurplePlugin *plugin)
 
 static void plugin_init(PurplePlugin *plugin)
 {
+	PurpleAccountOption *option;
+	PurplePluginInfo *info = plugin->info;
+	PurplePluginProtocolInfo *prpl_info = info->extra_info;
+	
+	option = purple_account_option_bool_new("Ignore me", "okcupid_fake_setting", TRUE);
+	prpl_info->protocol_options = g_list_append(prpl_info->protocol_options, option);
 	
 }
 
@@ -270,8 +285,8 @@ static PurplePluginProtocolInfo prpl_info = {
 
 	NULL,                   /* user_splits */
 	NULL,                   /* protocol_options */
-	/* NO_BUDDY_ICONS */    /* icon_spec */
-	{"jpg", 0, 0, 50, 50, -1, PURPLE_ICON_SCALE_SEND}, /* icon_spec */
+	NO_BUDDY_ICONS    /* icon_spec */
+	/*{"jpg", 0, 0, 50, 50, -1, PURPLE_ICON_SCALE_SEND}*/, /* icon_spec */
 	okc_list_icon,          /* list_icon */
 	NULL,                   /* list_emblems */
 	NULL,                   /* status_text */

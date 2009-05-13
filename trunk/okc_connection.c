@@ -370,6 +370,11 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 	gboolean is_proxy = FALSE;
 	const gchar *user_agent;
 
+	purple_debug_info("okcupid", "post_or_get\n");
+	//purple_debug_info("okcupid", "host: %s\n", host);
+	//purple_debug_info("okcupid", "url: %s\n", url);
+	//purple_debug_info("okcupid", "postdata: %s\n", postdata);
+
 	/* TODO: Fix keepalive and use it as much as possible */
 	keepalive = FALSE;
 
@@ -388,10 +393,10 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 	} else {
 		real_url = g_strdup(url);
 	}
-
+	
 	cookies = okc_cookies_to_string(oca);
 	user_agent = purple_account_get_string(oca->account, "user-agent", "Opera/9.50 (Windows NT 5.1; U; en-GB)");
-
+	
 	/* Build the request */
 	request = g_string_new(NULL);
 	g_string_append_printf(request, "%s %s HTTP/1.0\r\n",
