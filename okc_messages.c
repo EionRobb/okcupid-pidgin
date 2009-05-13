@@ -49,7 +49,8 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 
 	/* Process incomming messages here */
 	/* { "server_gmt" : 1234171728, "server_seqid" : 28322813, "people" : [ { "screenname" : "Saturn2888", "location" : "Overland Park, Kansas, United States", "distance" : 8118, "distance_units" : "miles", "thumb" : "134x16/333x215/2/13750662203864942041.jpeg", "match" : 86, "friend" : 66, "enemy" : 6, "age" : 22, "gender" : "M", "orientation" : "S", "open_connection" : "1", "im_ok" : "1" } ], "events" : [ { "type" : "im", "from" : "Saturn2888", "server_gmt" : 1232701652, "server_seqid" : 9791021, "contents" : "test test" } , { "type" : "im", "to" : "Saturn2888", "server_gmt" : 1232701674, "server_seqid" : 9791217, "contents" : "chatty chatty" } , { "type" : "im", "from" : "Saturn2888", "server_gmt" : 1232701680, "server_seqid" : 9791280, "contents" : "nope" } , { "type" : "im", "to" : "Saturn2888", "server_gmt" : 1234171728, "server_seqid" : 28322813, "contents" : "hi?" } ] } */
-
+	/*  var response =  {"im_off" : 0, "events" : [{"server_gmt" : 1234171728, "server_seqid" : 28322813, "from" : "eionrobb", "contents" : "hi?", "type" : "im"}, {"server_gmt" : 1234172578, "server_seqid" : 28328267, "to" : "eionrobb", "contents" : "worked", "type" : "im"}, {"server_gmt" : 1242216197, "server_seqid" : 23732214, "from" : "eionrobb", "contents" : "test", "type" : "im"}], "num_unread" : 0, "server_gmt" : 1242216215, "people" : [{"thumb" : "0x0/0x0/2/15281378330166548237.jpeg", "open_connection" : 1, "gender" : "M", "age" : 25, "match" : 85, "screenname" : "eionrobb", "location" : "Christchurch, New Zealand", "im_ok" : 1, "orientation" : "S", "friend" : 66, "enemy" : 7, "distance" : 8118}], "server_seqid" : 23732214}
+	                    parent.InstantEvents.openConnection_cb(response, ""); */
 	/* Continue looping, waiting for more messages */
 	okc_get_new_messages(oca);
 }
