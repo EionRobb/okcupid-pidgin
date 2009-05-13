@@ -107,7 +107,7 @@ static void okc_connection_process_data(OkCupidConnection *okconn)
 		okconn->rx_buf[okconn->rx_len - len] = '\0';
 		purple_debug_misc("facebook", "response headers\n%s\n",
 				okconn->rx_buf);
-		ok_update_cookies(okconn->oca, okconn->rx_buf);
+		okc_update_cookies(okconn->oca, okconn->rx_buf);
 	}
 
 	g_free(okconn->rx_buf);
@@ -125,7 +125,7 @@ static void okc_fatal_connection_cb(OkCupidConnection *okconn)
 
 	purple_debug_error("okcupid", "fatal connection error\n");
 
-	fb_connection_destroy(okconn);
+	okc_connection_destroy(okconn);
 
 	/* We died.  Do not pass Go.  Do not collect $200 */
 	/* In all seriousness, don't attempt to call the normal callback here.
@@ -347,7 +347,7 @@ static gchar *okc_cookies_to_string(OkCupidAccount *oca)
 	return g_string_free(str, FALSE);
 }
 
-static void oca_ssl_connection_error(PurpleSslConnection *ssl,
+static void okc_ssl_connection_error(PurpleSslConnection *ssl,
 		PurpleSslErrorType errortype, gpointer data)
 {
 	OkCupidConnection *okconn = data;
@@ -401,7 +401,7 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 	g_string_append_printf(request, "Connection: %s\r\n",
 			(keepalive ? "Keep-Alive" : "close"));
 	g_string_append_printf(request, "User-Agent: %s\r\n", user_agent);
-	if (method & FB_METHOD_POST) {
+	if (method & OKC_METHOD_POST) {
 		g_string_append_printf(request,
 				"Content-Type: application/x-www-form-urlencoded\r\n");
 		g_string_append_printf(request,

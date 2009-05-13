@@ -25,6 +25,6 @@
 
 int okc_send_im(PurpleConnection *pc, const gchar *who, const gchar *message,
 		PurpleMessageFlags flags);
-static gboolean okc_get_new_messages(OkCupidAccount *oca);
+gboolean okc_get_new_messages(OkCupidAccount *oca);
 
 #endif /* OKCUPID_MESSAGES_H */

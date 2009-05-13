@@ -142,7 +142,7 @@ static gboolean okc_get_messages_failsafe(OkCupidAccount *oca)
 		 * something is probably wrong */
 		purple_debug_warning("okcupid",
 				"executing message check failsafe\n");
-		okc_get_messages(oca);
+		okc_get_new_messages(oca);
 	}
 
 	return TRUE;
@@ -151,15 +151,13 @@ static gboolean okc_get_messages_failsafe(OkCupidAccount *oca)
 static void okc_login_cb(OkCupidAccount *oca, gchar *response, gsize len,
 		gpointer userdata)
 {
-	gchar *user_cookie;
-
 	purple_connection_update_progress(oca->pc, _("Authenticating"), 2, 3);
 
 	/* ok, we're logged in now! */
 	purple_connection_set_state(oca->pc, PURPLE_CONNECTED);
 
 	/* This will kick off our long-poll message retrieval loop */
-	okc_get_messages(oca);
+	okc_get_new_messages(oca);
 	
 	oca->perpetual_messages_timer = purple_timeout_add_seconds(15,
 			(GSourceFunc)okc_get_messages_failsafe, oca);
@@ -168,7 +166,6 @@ static void okc_login_cb(OkCupidAccount *oca, gchar *response, gsize len,
 static void okc_login(PurpleAccount *account)
 {
 	OkCupidAccount *oca;
-	guint16 i;
 	gchar *postdata, *encoded_username, *encoded_password;
 
 	/* Create account and initialize state */
@@ -204,28 +201,15 @@ static void okc_login(PurpleAccount *account)
 static void okc_close(PurpleConnection *pc)
 {
 	OkCupidAccount *oca;
-	gchar *postdata;
 
 	purple_debug_info("okcupid", "disconnecting account\n");
 
 	oca = pc->proto_data;
 
 	okc_post_or_get(oca, OKC_METHOD_POST, NULL, "/logout",
-			"", NULL, NULL, FALSE);
+			"ajax=1", NULL, NULL, FALSE);
 
-	/*if (fba->buddy_list_timer) {
-		purple_timeout_remove(fba->buddy_list_timer);
-	}
-	if (fba->friend_request_timer) {
-		purple_timeout_remove(fba->friend_request_timer);
-	}
-	if (fba->notifications_timer) {
-		purple_timeout_remove(fba->notifications_timer);
-	}
-	if (fba->new_messages_check_timer) {
-		purple_timeout_remove(fba->new_messages_check_timer);
-	}
-	if (fba->perpetual_messages_timer) {
+	/*if (fba->perpetual_messages_timer) {
 		purple_timeout_remove(fba->perpetual_messages_timer);
 	}*/
 
@@ -233,7 +217,7 @@ static void okc_close(PurpleConnection *pc)
 			g_slist_length(oca->conns));
 
 	while (oca->conns != NULL)
-		oca_connection_destroy(oca->conns->data);
+		okc_connection_destroy(oca->conns->data);
 
 	while (oca->dns_queries != NULL) {
 		PurpleDnsQueryData *dns_query = oca->dns_queries->data;
@@ -305,7 +289,7 @@ static PurplePluginProtocolInfo prpl_info = {
 	NULL,                   /* set_status */
 	NULL,                   /* set_idle */
 	NULL,                   /* change_passwd */
-	okc_add_buddy,          /* add_buddy */
+	/*okc_add_buddy*/NULL,          /* add_buddy */
 	NULL,                   /* add_buddies */
 	NULL,                   /* remove_buddy */
 	NULL,                   /* remove_buddies */
