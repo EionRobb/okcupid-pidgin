@@ -81,6 +81,8 @@ struct _OkCupidAccount {
 	time_t last_messages_download_time;
 	guint new_messages_check_timer;
 	guint perpetual_messages_timer;
+	guint server_seqid;
+	guint server_gmt;
 };
 
 struct _OkCupidBuddy {
