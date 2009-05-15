@@ -21,6 +21,8 @@
 #include "okc_messages.h"
 #include "okc_connection.h"
 
+#include <json-glib/json-glib.h>
+
 typedef struct _OkCupidOutgoingMessage OkCupidOutgoingMessage;
 
 struct _OkCupidOutgoingMessage {
@@ -51,6 +53,76 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 	/* { "server_gmt" : 1234171728, "server_seqid" : 28322813, "people" : [ { "screenname" : "Saturn2888", "location" : "Overland Park, Kansas, United States", "distance" : 8118, "distance_units" : "miles", "thumb" : "134x16/333x215/2/13750662203864942041.jpeg", "match" : 86, "friend" : 66, "enemy" : 6, "age" : 22, "gender" : "M", "orientation" : "S", "open_connection" : "1", "im_ok" : "1" } ], "events" : [ { "type" : "im", "from" : "Saturn2888", "server_gmt" : 1232701652, "server_seqid" : 9791021, "contents" : "test test" } , { "type" : "im", "to" : "Saturn2888", "server_gmt" : 1232701674, "server_seqid" : 9791217, "contents" : "chatty chatty" } , { "type" : "im", "from" : "Saturn2888", "server_gmt" : 1232701680, "server_seqid" : 9791280, "contents" : "nope" } , { "type" : "im", "to" : "Saturn2888", "server_gmt" : 1234171728, "server_seqid" : 28322813, "contents" : "hi?" } ] } */
 	/*  var response =  {"im_off" : 0, "events" : [{"server_gmt" : 1234171728, "server_seqid" : 28322813, "from" : "eionrobb", "contents" : "hi?", "type" : "im"}, {"server_gmt" : 1234172578, "server_seqid" : 28328267, "to" : "eionrobb", "contents" : "worked", "type" : "im"}, {"server_gmt" : 1242216197, "server_seqid" : 23732214, "from" : "eionrobb", "contents" : "test", "type" : "im"}], "num_unread" : 0, "server_gmt" : 1242216215, "people" : [{"thumb" : "0x0/0x0/2/15281378330166548237.jpeg", "open_connection" : 1, "gender" : "M", "age" : 25, "match" : 85, "screenname" : "eionrobb", "location" : "Christchurch, New Zealand", "im_ok" : 1, "orientation" : "S", "friend" : 66, "enemy" : 7, "distance" : 8118}], "server_seqid" : 23732214}
 	                    parent.InstantEvents.openConnection_cb(response, ""); */
+	
+	gchar *start_of_json = strchr(data, '{');
+	gchar *end_of_json = strrchr(data, '}');
+	
+	if (!start_of_json || !end_of_json || start_of_json >= end_of_json)
+	{
+		okc_get_new_messages(oca);
+		return;
+	}
+	
+	gchar *json_string = g_strndup(start_of_json, end_of_json-start_of_json+1);
+	
+	JsonParser *parser;
+	JsonNode *root;
+	
+	parser = json_parser_new();
+	g_free(json_string);
+	if(!json_parser_load_from_data(parser, tmp, -1, NULL))
+	{
+		okc_get_new_messages(oca);
+		return;	
+	}
+	root = json_parser_get_root(parser);
+	JsonObject *objnode;
+	objnode = json_node_get_object(root);
+	
+	JsonArray *events = NULL;
+	JsonArray *people = NULL;
+	
+	if(json_object_has_member(objnode, "events"))
+		events = json_node_get_array(json_object_get_member(objnode, "events"));
+	if(json_object_has_member(objnode, "people"))
+		people = json_node_get_array(json_object_get_member(objnode, "people"));
+	
+	//loop through events looking for messages
+	if (events != NULL)
+	{
+		GSList *event_list = json_array_get_elements(events);
+		for (GList *current = event_list; current; current = g_list_next(current))
+		{
+			JsonNode *currentNode = current->data;
+			JsonObject *event = json_node_get_object(currentNode);
+			gchar *event_type;
+			
+			event_type = json_node_get_string(json_object_get_member(event, "type"));
+			if (g_str_equal(event_type, "im"))
+			{
+				//instant message
+				gchar *message = json_node_get_string(json_object_get_member(event, "contents"));
+				message = okc_strdup_withhtml(message);
+				gchar *who;
+				PurpleMessageFlags flags;
+				if (json_object_has_member(event, "to"))
+				{
+					who = json_node_get_string(json_object_get_member(event, "to"));
+					flags = PURPLE_MESSAGE_SEND;
+				} else if (json_object_has_member(event, "from"))
+				{
+					who = json_node_get_string(json_object_get_member(event, "from"));
+					flags = PURPLE_MESSAGE_RECV;
+				}
+				serv_got_im (oca->pc, who, message, flags, time(NULL));
+				g_free(message);
+			}
+		}
+		g_list_free(event_list);
+	}
+	
+	g_object_unref(parser);
+	
 	/* Continue looping, waiting for more messages */
 	okc_get_new_messages(oca);
 }
