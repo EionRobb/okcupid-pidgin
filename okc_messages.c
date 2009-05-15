@@ -208,7 +208,7 @@ gboolean okc_get_new_messages(OkCupidAccount *oca)
 
 	purple_debug_info("facebook", "getting new messages\n");
 
-	fetch_url = g_strdup_printf("/instantevents?rand=0.%d&server_seqid=%d&server_gmt=%d", g_random_int(), oca->server_seqid, oca->server_gmt);
+	fetch_url = g_strdup_printf("/instantevents?rand=0.%u&server_seqid=%u&server_gmt=%u", g_random_int(), oca->server_seqid, oca->server_gmt);
 
 	okc_post_or_get(oca, OKC_METHOD_GET, NULL, fetch_url, NULL, got_new_messages, oca->pc, TRUE);
 	oca->last_messages_download_time = now;
