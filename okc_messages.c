@@ -37,6 +37,30 @@ struct _OkCupidOutgoingMessage {
 
 gboolean okc_send_im_fom(OkCupidOutgoingMessage *msg);
 
+void buddy_icon_cb(OkCupidAccount *oca, gchar *data, gsize data_len,
+		gpointer user_data)
+{
+	gchar *buddyname;
+	PurpleBuddy *buddy;
+	gpointer buddy_icon_data;
+
+	buddyname = user_data;
+
+	purple_debug_info("okcupid",
+			"buddy icon for buddy %s %" G_GSIZE_FORMAT "\n",
+			buddyname, data_len);
+
+	buddy = purple_find_buddy(fba->account, buddyname);
+	g_free(buddyname);
+	if (buddy == NULL)
+		return;
+
+	buddy_icon_data = g_memdup(data, data_len);
+
+	purple_buddy_icons_set_for_user(oca->account, buddy->name,
+			buddy_icon_data, data_len, NULL);
+}
+
 void got_new_messages(OkCupidAccount *oca, gchar *data,
 		gsize data_len, gpointer userdata)
 {
@@ -69,12 +93,13 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 	JsonNode *root;
 	
 	parser = json_parser_new();
-	g_free(json_string);
-	if(!json_parser_load_from_data(parser, tmp, -1, NULL))
+	if(!json_parser_load_from_data(parser, json_string, -1, NULL))
 	{
+		g_free(json_string);
 		okc_get_new_messages(oca);
 		return;	
 	}
+	g_free(json_string);
 	root = json_parser_get_root(parser);
 	JsonObject *objnode;
 	objnode = json_node_get_object(root);
@@ -90,12 +115,13 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 	//loop through events looking for messages
 	if (events != NULL)
 	{
-		GSList *event_list = json_array_get_elements(events);
-		for (GList *current = event_list; current; current = g_list_next(current))
+		GList *event_list = json_array_get_elements(events);
+		GList *current;
+		for (current = event_list; current; current = g_list_next(current))
 		{
 			JsonNode *currentNode = current->data;
 			JsonObject *event = json_node_get_object(currentNode);
-			gchar *event_type;
+			const gchar *event_type;
 			
 			event_type = json_node_get_string(json_object_get_member(event, "type"));
 			if (g_str_equal(event_type, "im"))
@@ -103,7 +129,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 				//instant message
 				gchar *message = json_node_get_string(json_object_get_member(event, "contents"));
 				message = okc_strdup_withhtml(message);
-				gchar *who;
+				const gchar *who = NULL;
 				PurpleMessageFlags flags;
 				if (json_object_has_member(event, "to"))
 				{
@@ -114,12 +140,43 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 					who = json_node_get_string(json_object_get_member(event, "from"));
 					flags = PURPLE_MESSAGE_RECV;
 				}
-				serv_got_im (oca->pc, who, message, flags, time(NULL));
+				if (who)
+					serv_got_im (oca->pc, who, message, flags, time(NULL));
 				g_free(message);
 			}
 		}
 		g_list_free(event_list);
 	}
+	
+	if (people != NULL)
+	{
+		GList *people_list = json_array_get_elements(people);
+		GList *current;
+		for (current = people_list; current; current = g_list_next(current))
+		{
+			JsonNode *currentNode = current->data;
+			JsonObject *person = json_node_get_object(currentNode);
+			
+			gchar *buddy_name = json_node_get_string(json_object_get_member(person, "screenname"));
+			gchar *buddy_icon = json_node_get_string(json_object_get_member(person, "thumb"));
+			
+			gchar *tmp = g_strdup_printf("buddy_icon_%d_cache", buddy_name);
+			if (!g_str_equal(purple_account_get_string(oca->account, tmp, ""), buddy_icon))
+			{
+				/* Save the buddy icon so that they don't all need to be reloaded at startup */
+				purple_account_set_string(oca->account, tmp, buddy_icon);
+				gchar *buddy_icon_url = g_strdup_printf("/php/load_okc_image.php/images/%s", buddy_icon);
+				fb_post_or_get(fba, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, buddy_icon_cb, g_strdup(purple_buddy_get_name(buddy)), FALSE);
+				g_free(buddy_icon_url);
+			}
+			g_free(tmp);
+		}
+	}
+	
+	if (json_object_has_member(objnode, "server_seqid"))
+		oca->server_seqid = json_node_get_int(json_object_get_member(objnode, "server_seqid"));
+	if (json_object_has_member(objnode, "server_gmt"))
+		oca->server_gmt = json_node_get_int(json_object_get_member(objnode, "server_gmt"));
 	
 	g_object_unref(parser);
 	
@@ -151,7 +208,7 @@ gboolean okc_get_new_messages(OkCupidAccount *oca)
 
 	purple_debug_info("facebook", "getting new messages\n");
 
-	fetch_url = g_strdup_printf("/instantevents?rand=0.%d", g_random_int());
+	fetch_url = g_strdup_printf("/instantevents?rand=0.%d&server_seqid=%d&server_gmt=%d", g_random_int(), oca->server_seqid, oca->server_gmt);
 
 	okc_post_or_get(oca, OKC_METHOD_GET, NULL, fetch_url, NULL, got_new_messages, oca->pc, TRUE);
 	oca->last_messages_download_time = now;
