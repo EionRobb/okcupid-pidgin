@@ -50,7 +50,7 @@ void buddy_icon_cb(OkCupidAccount *oca, gchar *data, gsize data_len,
 			"buddy icon for buddy %s %" G_GSIZE_FORMAT "\n",
 			buddyname, data_len);
 
-	buddy = purple_find_buddy(fba->account, buddyname);
+	buddy = purple_find_buddy(oca->account, buddyname);
 	g_free(buddyname);
 	if (buddy == NULL)
 		return;
@@ -160,13 +160,13 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			gchar *buddy_name = json_node_get_string(json_object_get_member(person, "screenname"));
 			gchar *buddy_icon = json_node_get_string(json_object_get_member(person, "thumb"));
 			
-			gchar *tmp = g_strdup_printf("buddy_icon_%d_cache", buddy_name);
+			gchar *tmp = g_strdup_printf("buddy_icon_%s_cache", buddy_name);
 			if (!g_str_equal(purple_account_get_string(oca->account, tmp, ""), buddy_icon))
 			{
 				/* Save the buddy icon so that they don't all need to be reloaded at startup */
 				purple_account_set_string(oca->account, tmp, buddy_icon);
 				gchar *buddy_icon_url = g_strdup_printf("/php/load_okc_image.php/images/%s", buddy_icon);
-				fb_post_or_get(fba, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, buddy_icon_cb, g_strdup(purple_buddy_get_name(buddy)), FALSE);
+				okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, buddy_icon_cb, g_strdup(purple_buddy_get_name(buddy)), FALSE);
 				g_free(buddy_icon_url);
 			}
 			g_free(tmp);
