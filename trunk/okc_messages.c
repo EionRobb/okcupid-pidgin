@@ -166,7 +166,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 				/* Save the buddy icon so that they don't all need to be reloaded at startup */
 				purple_account_set_string(oca->account, tmp, buddy_icon);
 				gchar *buddy_icon_url = g_strdup_printf("/php/load_okc_image.php/images/%s", buddy_icon);
-				okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, buddy_icon_cb, g_strdup(purple_buddy_get_name(buddy)), FALSE);
+				okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, buddy_icon_cb, g_strdup(buddy_name), FALSE);
 				g_free(buddy_icon_url);
 			}
 			g_free(tmp);
