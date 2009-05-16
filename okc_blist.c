@@ -118,3 +118,79 @@ void okc_blist_wink_buddy(PurpleBlistNode *node, gpointer data)
 	g_free(postdata);
 }
 
+void okc_got_info(OkCupidAccount *oca, gchar *data,
+		gsize data_len, gpointer userdata)
+{
+	gchar *username = userdata;
+	
+	if (!data || !data_len)
+	{
+		g_free(username);
+		return;
+	}
+	
+	/*{ screenname : "Saturn2888", uid : "16335530578074790482", age : "22", gender : "M", sexpref : "Straight", 
+	thumb : "134x16/333x215/2/13750662203864942041.jpeg", 
+	pics : [ "http://cdn.okcimg.com/php/load_okc_image.php/images/134x16/333x215/2/13750662203864942041.jpeg" , 
+	"http://cdn.okcimg.com/php/load_okc_image.php/images/133x170/393x430/2/15211878639154382289.jpeg" , 
+	"http://cdn.okcimg.com/php/load_okc_image.php/images/35x25/185x175/2/13821158136993628299.jpeg" , 
+	"http://cdn.okcimg.com/php/load_okc_image.php/images/53x86/263x296/2/1445788482889546403.jpeg" , 
+	"http://cdn.okcimg.com/php/load_okc_image.php/images/91x0/388x297/2/6083536188236847527.jpeg" ], 
+	location : "Overland Park, Kansas", relationshipstatus : "SINGLE", match : "84", enemy : "7", 
+	friend : "66", success : "true", lastipaddress : "" } */
+	
+	purple_debug_info("okcupid", "okc_got_info: %s\n", okc_got_info);
+	
+	JsonParser *parser;
+	JsonNode *root;
+	
+	parser = json_parser_new();
+	if(!json_parser_load_from_data(parser, data, data_len, NULL))
+	{
+		g_free(username);
+		return;	
+	}
+	root = json_parser_get_root(parser);
+	JsonObject *info;
+	info = json_node_get_array(root);
+	
+	user_info = purple_notify_user_info_new();
+	
+	purple_notify_user_info_add_pair(user_info, _("Age"), json_node_get_string(json_object_get_member(info, "age")));
+	purple_notify_user_info_add_pair(user_info, _("Gender"), json_node_get_string(json_object_get_member(info, "gender")));
+	purple_notify_user_info_add_pair(user_info, _("Sexual Preference"), json_node_get_string(json_object_get_member(info, "sexpref")));
+	purple_notify_user_info_add_pair(user_info, _("Relationship Status"), json_node_get_string(json_object_get_member(info, "relationshipstatus")));
+	purple_notify_user_info_add_pair(user_info, _("Location"), json_node_get_string(json_object_get_member(info, "location")));
+	purple_notify_user_info_add_pair(user_info, _("Match"), json_node_get_string(json_object_get_member(info, "match")));
+	purple_notify_user_info_add_pair(user_info, _("Enemy"), json_node_get_string(json_object_get_member(info, "enemy")));
+	purple_notify_user_info_add_pair(user_info, _("Friend"), json_node_get_string(json_object_get_member(info, "friend")));
+	
+	const gchar *buddy_icon = json_node_get_string(json_object_get_member(info, "thumb"));
+	gchar *tmp = g_strdup_printf("buddy_icon_%s_cache", username);
+	if (!g_str_equal(purple_account_get_string(oca->account, tmp, ""), buddy_icon))
+	{
+		/* Save the buddy icon so that they don't all need to be reloaded at startup */
+		purple_account_set_string(oca->account, tmp, buddy_icon);
+		gchar *buddy_icon_url = g_strdup_printf("/php/load_okc_image.php/images/%s", buddy_icon);
+		okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, buddy_icon_cb, g_strdup(username), FALSE);
+		g_free(buddy_icon_url);
+	}
+	g_free(tmp);
+	
+	purple_notify_userinfo(oca->pc, username, user_info, NULL, NULL);
+	purple_notify_user_info_destroy(user_info);
+	
+	g_object_unref(parser);
+	g_free(username);
+}
+
+void okc_get_info(PurpleConnection *pc, const gchar *uid)
+{
+	gchar *profile_url;
+
+	profile_url = g_strdup_printf("/rjs/userinfo?u=%s&template=userinfo%2Fajax.html", purple_url_encode(uid));
+
+	okc_post_or_get(pc->proto_data, OKC_METHOD_GET, NULL, profile_url, NULL, okc_got_info, g_strdup(uid), FALSE);
+
+	g_free(profile_url);
+}
