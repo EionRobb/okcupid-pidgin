@@ -369,11 +369,13 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 	gchar *real_url;
 	gboolean is_proxy = FALSE;
 	const gchar *user_agent;
+	const gchar* const *languages;
+	gchar *language_names;
+	PurpleProxyInfo *proxy_info = NULL;
+	gchar *proxy_auth;
+	gchar *proxy_auth_base64;
 
 	purple_debug_info("okcupid", "post_or_get\n");
-	//purple_debug_info("okcupid", "host: %s\n", host);
-	//purple_debug_info("okcupid", "url: %s\n", url);
-	//purple_debug_info("okcupid", "postdata: %s\n", postdata);
 
 	/* TODO: Fix keepalive and use it as much as possible */
 	keepalive = FALSE;
@@ -381,15 +383,19 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 	if (host == NULL)
 		host = "www.okcupid.com";
 
-	if (oca && oca->account && oca->account->proxy_info &&
-		(oca->account->proxy_info->type == PURPLE_PROXY_HTTP ||
-		(oca->account->proxy_info->type == PURPLE_PROXY_USE_GLOBAL &&
-			purple_global_proxy_get_info() &&
-			purple_global_proxy_get_info()->type ==
-					PURPLE_PROXY_HTTP)))
+	if (oca && oca->account && !(method & OKC_METHOD_SSL))
+	{
+		proxy_info = purple_proxy_get_setup(oca->account);
+		if (purple_proxy_info_get_type(proxy_info) == PURPLE_PROXY_USE_GLOBAL)
+			proxy_info = purple_global_proxy_get_info();
+		if (purple_proxy_info_get_type(proxy_info) == PURPLE_PROXY_HTTP)
+		{
+			is_proxy = TRUE;
+		}	
+	}
+	if (is_proxy == TRUE)
 	{
 		real_url = g_strdup_printf("http://%s%s", host, url);
-		is_proxy = TRUE;
 	} else {
 		real_url = g_strdup(url);
 	}
@@ -402,7 +408,9 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 	g_string_append_printf(request, "%s %s HTTP/1.0\r\n",
 			(method & OKC_METHOD_POST) ? "POST" : "GET",
 			real_url);
-	g_string_append_printf(request, "Host: %s\r\n", host);
+	
+	if (is_proxy == FALSE)
+		g_string_append_printf(request, "Host: %s\r\n", host);
 	g_string_append_printf(request, "Connection: %s\r\n",
 			(keepalive ? "Keep-Alive" : "close"));
 	g_string_append_printf(request, "User-Agent: %s\r\n", user_agent);
@@ -414,6 +422,24 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 	}
 	g_string_append_printf(request, "Accept: */*\r\n");
 	g_string_append_printf(request, "Cookie: %s\r\n", cookies);
+	if (is_proxy == TRUE)
+	{
+		if (purple_proxy_info_get_username(proxy_info) &&
+			purple_proxy_info_get_password(proxy_info))
+		{
+			proxy_auth = g_strdup_printf("%s:%s", purple_proxy_info_get_username(proxy_info), purple_proxy_info_get_password(proxy_info));
+			proxy_auth_base64 = purple_base64_encode(proxy_auth, strlen(proxy_auth));
+			g_string_append_printf(request, "Proxy-Authorization: Basic %s\r\n", proxy_auth_base64);
+			g_free(proxy_auth_base64);
+			g_free(proxy_auth);
+		}
+	}
+	/* Tell the server what language we accept, so that we get error messages in our language (rather than our IP's) */
+	languages = g_get_language_names();
+	language_names = g_strjoinv(", ", (gchar **)languages);
+	purple_util_chrreplace(language_names, '_', '-');
+	g_string_append_printf(request, "Accept-Language: %s\r\n", language_names);
+	g_free(language_names);
 
 	purple_debug_misc("okcupid", "sending request headers:\n%s\n",
 			request->str);
