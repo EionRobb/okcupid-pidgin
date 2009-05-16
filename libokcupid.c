@@ -21,6 +21,7 @@
 #include "libokcupid.h"
 #include "okc_connection.h"
 #include "okc_messages.h"
+#include "okc_blist.h"
 
 /******************************************************************************/
 /* Utility functions */
