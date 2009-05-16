@@ -211,7 +211,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 void okc_get_new_messages_now(OkCupidAccount *oca)
 {
 	gchar *fetch_url;
-	purple_debug_info("facebook", "getting new messages now\n");
+	purple_debug_info("okcupid", "getting new messages now\n");
 
 	fetch_url = g_strdup_printf("/instantevents?refresh_toolbar=1&show_online=1&num_unread=1&im_status=1");
 
@@ -242,7 +242,7 @@ gboolean okc_get_new_messages(OkCupidAccount *oca)
 		return FALSE;
 	}
 
-	purple_debug_info("facebook", "getting new messages\n");
+	purple_debug_info("okcupid", "getting new messages\n");
 
 	fetch_url = g_strdup_printf("/instantevents?rand=0.%u&server_seqid=%u&server_gmt=%u&show_online=1&num_unread=1&im_status=1", g_random_int(), oca->server_seqid, oca->server_gmt);
 

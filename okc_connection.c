@@ -105,7 +105,7 @@ static void okc_connection_process_data(OkCupidConnection *okconn)
 		tmp = g_memdup(tmp, len + 1);
 		tmp[len] = '\0';
 		okconn->rx_buf[okconn->rx_len - len] = '\0';
-		purple_debug_misc("facebook", "response headers\n%s\n",
+		purple_debug_misc("okcupid", "response headers\n%s\n",
 				okconn->rx_buf);
 		okc_update_cookies(okconn->oca, okconn->rx_buf);
 	}
