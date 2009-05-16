@@ -217,10 +217,9 @@ static void okc_close(PurpleConnection *pc)
 
 	okc_post_or_get(oca, OKC_METHOD_POST, NULL, "/logout",
 			"ajax=1", NULL, NULL, FALSE);
-
-	/*if (fba->perpetual_messages_timer) {
-		purple_timeout_remove(fba->perpetual_messages_timer);
-	}*/
+	
+	if (oca->new_messages_check_timer)
+		purple_timeout_remove(oca->new_messages_check_timer);
 
 	purple_debug_info("okcupid", "destroying %d incomplete connections\n",
 			g_slist_length(oca->conns));
