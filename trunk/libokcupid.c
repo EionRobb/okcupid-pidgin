@@ -117,7 +117,6 @@ gchar *okc_strdup_withhtml(const gchar *src)
 
 static const char *okc_list_icon(PurpleAccount *account, PurpleBuddy *buddy)
 {
-	purple_debug_info("okcupid", "list_icon\n");
 	return "okcupid";
 }
 
@@ -227,6 +226,8 @@ static void okc_close(PurpleConnection *pc)
 		purple_timeout_remove(oca->new_messages_check_timer);
 	if (oca->buddy_presence_timer)
 		purple_timeout_remove(oca->buddy_presence_timer);
+	if (oca->perpetual_messages_timer)
+		purple_timeout_remove(oca->perpetual_messages_timer);
 
 	purple_debug_info("okcupid", "destroying %d incomplete connections\n",
 			g_slist_length(oca->conns));
@@ -306,7 +307,7 @@ static PurplePluginProtocolInfo prpl_info = {
 	okc_send_im,            /* send_im */
 	NULL,                   /* set_info */
 	NULL,                   /* send_typing */
-	NULL,                   /* get_info */
+	okc_get_info,           /* get_info */
 	NULL,                   /* set_status */
 	NULL,                   /* set_idle */
 	NULL,                   /* change_passwd */
