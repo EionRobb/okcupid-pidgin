@@ -1,7 +1,7 @@
 /*
- * libfacebook
+ * libokcupid
  *
- * libfacebook is the property of its developers.  See the COPYRIGHT file
+ * libokcupid is the property of its developers.  See the COPYRIGHT file
  * for more details.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -64,7 +64,6 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 		gsize data_len, gpointer userdata)
 {
 	PurpleConnection *pc = userdata;
-	PurpleBuddy *buddy;
 
 	/* NULL data will crash on Windows */
 	if (data == NULL)
@@ -146,7 +145,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 					flags = PURPLE_MESSAGE_RECV;
 				}
 				if (who)
-					serv_got_im (oca->pc, who, message, flags, time(NULL));
+					serv_got_im (pc, who, message, flags, time(NULL));
 				g_free(message);
 			}
 		}
@@ -188,7 +187,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 	{
 		GList *online_buddies_list = json_array_get_elements(online_buddies);
 		GList *current;
-		for (current = people_list; current; current = g_list_next(current))
+		for (current = online_buddies_list; current; current = g_list_next(current))
 		{
 			JsonNode *currentNode = current->data;
 			JsonObject *buddy = json_node_get_object(currentNode);
@@ -214,7 +213,7 @@ void okc_get_new_messages_now(OkCupidAccount *oca)
 	gchar *fetch_url;
 	purple_debug_info("facebook", "getting new messages now\n");
 
-	fetch_url = g_strdup_printf("/instantevents?refresh_toolbar=1&show_online=1&num_unread=1&im_status=1", g_random_int(), oca->server_seqid, oca->server_gmt);
+	fetch_url = g_strdup_printf("/instantevents?refresh_toolbar=1&show_online=1&num_unread=1&im_status=1");
 
 	okc_post_or_get(oca, OKC_METHOD_GET, NULL, fetch_url, NULL, got_new_messages, oca->pc, FALSE);
 

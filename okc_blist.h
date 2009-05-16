@@ -1,7 +1,7 @@
 /*
- * libfacebook
+ * libokcupid
  *
- * libfacebook is the property of its developers.  See the COPYRIGHT file
+ * libokcupid is the property of its developers.  See the COPYRIGHT file
  * for more details.
  *
  * This program is free software: you can redistribute it and/or modify

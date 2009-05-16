@@ -1,7 +1,7 @@
 /*
- * libfacebook
+ * libokcupid
  *
- * libfacebook is the property of its developers.  See the COPYRIGHT file
+ * libokcupid is the property of its developers.  See the COPYRIGHT file
  * for more details.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 #include "libokcupid.h"
 #include "okc_connection.h"
 #include "okc_blist.h"
+#include "okc_messages.h"
 
 void okc_got_online_buddies(OkCupidAccount *oca, gchar *data,
 		gsize data_len, gpointer userdata)
@@ -29,6 +30,9 @@ void okc_got_online_buddies(OkCupidAccount *oca, gchar *data,
 	//{ "screenname" : "eionrobb", "userid" : "339665194716288918", "open_connection" : 1, "im_ok" : 0 } ]
 	JsonParser *parser;
 	JsonNode *root;
+
+	if (data)
+		purple_debug_info("okcupid", "got_online_buddies: %s\n", data);
 	
 	parser = json_parser_new();
 	if(!json_parser_load_from_data(parser, data, data_len, NULL))
@@ -139,7 +143,7 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 	location : "Overland Park, Kansas", relationshipstatus : "SINGLE", match : "84", enemy : "7", 
 	friend : "66", success : "true", lastipaddress : "" } */
 	
-	purple_debug_info("okcupid", "okc_got_info: %s\n", okc_got_info);
+	purple_debug_info("okcupid", "okc_got_info: %s\n", data);
 	
 	JsonParser *parser;
 	JsonNode *root;
@@ -152,8 +156,9 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 	}
 	root = json_parser_get_root(parser);
 	JsonObject *info;
-	info = json_node_get_array(root);
-	
+	info = json_node_get_object(root);	
+
+	PurpleNotifyUserInfo *user_info;
 	user_info = purple_notify_user_info_new();
 	
 	purple_notify_user_info_add_pair(user_info, _("Age"), json_node_get_string(json_object_get_member(info, "age")));
@@ -188,7 +193,7 @@ void okc_get_info(PurpleConnection *pc, const gchar *uid)
 {
 	gchar *profile_url;
 
-	profile_url = g_strdup_printf("/rjs/userinfo?u=%s&template=userinfo%2Fajax.html", purple_url_encode(uid));
+	profile_url = g_strdup_printf("/rjs/userinfo?u=%s&template=userinfo%%2Fajax.html", purple_url_encode(uid));
 
 	okc_post_or_get(pc->proto_data, OKC_METHOD_GET, NULL, profile_url, NULL, okc_got_info, g_strdup(uid), FALSE);
 
