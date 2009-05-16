@@ -49,7 +49,7 @@ void okc_got_online_buddies(OkCupidAccount *oca, gchar *data,
 		const char *status_id;
 		if (json_node_get_int(json_object_get_member(presence, "open_connection")))
 		{
-			status_id = purple_primitive_get_id_from_type(PURPLE_STATUS_ONLINE);
+			status_id = purple_primitive_get_id_from_type(PURPLE_STATUS_AVAILABLE);
 		} else {
 			status_id = purple_primitive_get_id_from_type(PURPLE_STATUS_OFFLINE);
 		}
@@ -113,7 +113,7 @@ void okc_blist_wink_buddy(PurpleBlistNode *node, gpointer data)
 	
 	postdata = g_strdup_printf("woo=1&u=%s&ajax=1", buddy->name);
 	
-	okc_post_or_get(fba, OKC_METHOD_POST, NULL, "/profile", postdata, NULL, NULL, FALSE);
+	okc_post_or_get(oca, OKC_METHOD_POST, NULL, "/profile", postdata, NULL, NULL, FALSE);
 	
 	g_free(postdata);
 }
