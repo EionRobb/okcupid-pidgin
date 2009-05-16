@@ -165,6 +165,7 @@ static void okc_login_cb(OkCupidAccount *oca, gchar *response, gsize len,
 	okc_get_new_messages(oca);
 	
 	okc_get_online_buddies(oca);
+	okc_get_new_messages_now(oca);
 	
 	oca->perpetual_messages_timer = purple_timeout_add_seconds(15,
 			(GSourceFunc)okc_get_messages_failsafe, oca);
