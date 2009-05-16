@@ -36,18 +36,18 @@ void okc_got_online_buddies(OkCupidAccount *oca, gchar *data,
 		return;	
 	}
 	root = json_parser_get_root(parser);
-	JsonObject *presences;
+	JsonArray *presences;
 	presences = json_node_get_array(root);
 	int i;
 	for(i = 0; i < json_array_get_length(presences); i++)
 	{
 		JsonObject *presence;
 		presence = json_node_get_object(json_array_get_element(presences, i));
-		gchar *buddy_name;
+		const gchar *buddy_name;
 		buddy_name = json_node_get_string(json_object_get_member(presence, "screenname"));
 		
 		const char *status_id;
-		if (json_node_get_int(json_object_get_member(presence, "open_connection"))
+		if (json_node_get_int(json_object_get_member(presence, "open_connection")))
 		{
 			status_id = purple_primitive_get_id_from_type(PURPLE_STATUS_ONLINE);
 		} else {
@@ -87,7 +87,7 @@ gboolean okc_get_online_buddies(gpointer data)
 	
 	url = g_strdup_printf("/instantevents?is_online=1&rand=0.%u&usernames=%s", g_random_int(), usernames);
 	
-	okc_post_or_get(oca, FB_METHOD_POST, NULL, url,
+	okc_post_or_get(oca, OKC_METHOD_POST, NULL, url,
 			NULL, okc_got_online_buddies, NULL, FALSE);
 	
 	g_free(url);
@@ -105,9 +105,9 @@ void okc_blist_wink_buddy(PurpleBlistNode *node, gpointer data)
 	if(!PURPLE_BLIST_NODE_IS_BUDDY(node))
 		return;
 	buddy = (PurpleBuddy *) node;
-	if (!buddy)
+	if (!buddy || !buddy->account || !buddy->account->gc)
 		return;
-	oca = buddy->gc->proto_data;
+	oca = buddy->account->gc->proto_data;
 	if (!oca)
 		return;
 	
