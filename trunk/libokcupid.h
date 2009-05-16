@@ -31,6 +31,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <json-glib/json-glib.h>
+
 #ifndef G_GNUC_NULL_TERMINATED
 #	if __GNUC__ >= 4
 #		define G_GNUC_NULL_TERMINATED __attribute__((__sentinel__))
@@ -81,6 +83,7 @@ struct _OkCupidAccount {
 	time_t last_messages_download_time;
 	guint new_messages_check_timer;
 	guint perpetual_messages_timer;
+	guint buddy_presence_timer;
 	guint server_seqid;
 	guint server_gmt;
 };

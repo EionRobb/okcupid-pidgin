@@ -164,8 +164,12 @@ static void okc_login_cb(OkCupidAccount *oca, gchar *response, gsize len,
 	/* This will kick off our long-poll message retrieval loop */
 	okc_get_new_messages(oca);
 	
+	okc_get_online_buddies(oca);
+	
 	oca->perpetual_messages_timer = purple_timeout_add_seconds(15,
 			(GSourceFunc)okc_get_messages_failsafe, oca);
+	oca->buddy_presence_timer = purple_timeout_add_seconds(60,
+			(GSourceFunc)okc_get_online_buddies, oca);
 }
 
 static void okc_login(PurpleAccount *account)
@@ -220,6 +224,8 @@ static void okc_close(PurpleConnection *pc)
 	
 	if (oca->new_messages_check_timer)
 		purple_timeout_remove(oca->new_messages_check_timer);
+	if (oca->buddy_presence_timer)
+		purple_timeout_remove(oca->buddy_presence_timer);
 
 	purple_debug_info("okcupid", "destroying %d incomplete connections\n",
 			g_slist_length(oca->conns));

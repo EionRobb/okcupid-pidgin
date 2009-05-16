@@ -18,10 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "libokcupid.h"
 #include "okc_messages.h"
 #include "okc_connection.h"
-
-#include <json-glib/json-glib.h>
 
 typedef struct _OkCupidOutgoingMessage OkCupidOutgoingMessage;
 
@@ -227,6 +226,21 @@ void okc_send_im_cb(OkCupidAccount *oca, gchar *data, gsize data_len, gpointer u
 		data = "(null)";
 	
 	purple_debug_misc("okcupid", "sent im response: %s\n", data);
+	
+	/*
+	Possible responses:
+
+             {
+               "message_sent" : 0,
+               "reason" : "recip_not_online"
+             }
+             {
+               "message_sent" : 0,
+               "reason" : "im_self"
+             }
+
+	*/
+
 }
 
 gboolean okc_send_im_fom(OkCupidOutgoingMessage *msg)
