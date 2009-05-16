@@ -105,11 +105,17 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 	
 	JsonArray *events = NULL;
 	JsonArray *people = NULL;
+	JsonArray *online_buddies = NULL;
+	int unread_message_count = 0;
 	
 	if(json_object_has_member(objnode, "events"))
 		events = json_node_get_array(json_object_get_member(objnode, "events"));
 	if(json_object_has_member(objnode, "people"))
 		people = json_node_get_array(json_object_get_member(objnode, "people"));
+	if(json_object_has_member(objnode, "num_unread"))
+		unread_message_count = json_node_get_int(json_object_get_member(objnode, "num_unread"));
+	if(json_object_has_member(objnode, "online_buddies"))
+		online_buddies = json_node_get_array(json_object_get_member(objnode, "online_buddies"));
 	
 	//loop through events looking for messages
 	if (events != NULL)
@@ -170,6 +176,26 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			}
 			g_free(tmp);
 		}
+		g_list_free(people_list);
+	}
+	
+	if (unread_message_count != 0)
+	{
+		//TODO display unread message count in email messages area
+	}
+	
+	if (online_buddies != NULL)
+	{
+		GList *online_buddies_list = json_array_get_elements(online_buddies);
+		GList *current;
+		for (current = people_list; current; current = g_list_next(current))
+		{
+			JsonNode *currentNode = current->data;
+			JsonObject *buddy = json_node_get_object(currentNode);
+			
+			//TODO find out what's in the online_buddies array
+		}
+		g_list_free(online_buddies_list);
 	}
 	
 	if (json_object_has_member(objnode, "server_seqid"))
@@ -181,6 +207,18 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 	
 	/* Continue looping, waiting for more messages */
 	okc_get_new_messages(oca);
+}
+
+void okc_get_new_messages_now(OkCupidAccount *oca)
+{
+	gchar *fetch_url;
+	purple_debug_info("facebook", "getting new messages now\n");
+
+	fetch_url = g_strdup_printf("/instantevents?refresh_toolbar=1&show_online=1&num_unread=1&im_status=1", g_random_int(), oca->server_seqid, oca->server_gmt);
+
+	okc_post_or_get(oca, OKC_METHOD_GET, NULL, fetch_url, NULL, got_new_messages, oca->pc, FALSE);
+
+	g_free(fetch_url);
 }
 
 gboolean okc_get_new_messages(OkCupidAccount *oca)
@@ -207,7 +245,7 @@ gboolean okc_get_new_messages(OkCupidAccount *oca)
 
 	purple_debug_info("facebook", "getting new messages\n");
 
-	fetch_url = g_strdup_printf("/instantevents?rand=0.%u&server_seqid=%u&server_gmt=%u", g_random_int(), oca->server_seqid, oca->server_gmt);
+	fetch_url = g_strdup_printf("/instantevents?rand=0.%u&server_seqid=%u&server_gmt=%u&show_online=1&num_unread=1&im_status=1", g_random_int(), oca->server_seqid, oca->server_gmt);
 
 	okc_post_or_get(oca, OKC_METHOD_GET, NULL, fetch_url, NULL, got_new_messages, oca->pc, TRUE);
 	oca->last_messages_download_time = now;
