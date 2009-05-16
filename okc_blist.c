@@ -87,7 +87,7 @@ gboolean okc_get_online_buddies(gpointer data)
 	
 	url = g_strdup_printf("/instantevents?is_online=1&rand=0.%u&usernames=%s", g_random_int(), usernames);
 	
-	okc_post_or_get(oca, OKC_METHOD_POST, NULL, url,
+	okc_post_or_get(oca, OKC_METHOD_GET, NULL, url,
 			NULL, okc_got_online_buddies, NULL, FALSE);
 	
 	g_free(url);

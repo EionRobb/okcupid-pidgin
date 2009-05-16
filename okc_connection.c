@@ -403,6 +403,9 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 	cookies = okc_cookies_to_string(oca);
 	user_agent = purple_account_get_string(oca->account, "user-agent", "Opera/9.50 (Windows NT 5.1; U; en-GB)");
 	
+	if (method & FB_METHOD_POST && !postdata)
+		postdata = "";
+	
 	/* Build the request */
 	request = g_string_new(NULL);
 	g_string_append_printf(request, "%s %s HTTP/1.0\r\n",
