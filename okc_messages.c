@@ -164,7 +164,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			if (g_str_equal(event_type, "im"))
 			{
 				//instant message
-				gchar *message = json_node_get_string(json_object_get_member(event, "contents"));
+				const gchar *message = json_node_get_string(json_object_get_member(event, "contents"));
 				message = okc_strdup_withhtml(message);
 				const gchar *who = NULL;
 				PurpleMessageFlags flags;
@@ -221,10 +221,10 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 		g_list_free(people_list);
 	}
 	
-	if (unread_message_count > 0)
-	{
-		purple_notify_emails(pc, unread_message_count, FALSE, NULL, NULL, NULL, NULL, NULL, NULL);
-	}
+	//if (unread_message_count > 0)
+	//{
+		purple_notify_emails(pc, unread_message_count, FALSE, NULL, NULL, &(oca->account->username), NULL, NULL, NULL);
+	//}
 	
 	if (json_object_has_member(objnode, "server_seqid"))
 		oca->server_seqid = json_node_get_int(json_object_get_member(objnode, "server_seqid"));
