@@ -283,6 +283,16 @@ gboolean okc_get_new_messages(OkCupidAccount *oca)
 	return FALSE;
 }
 
+void okc_msg_destroy(OkCupidOutgoingMessage *msg)
+{
+	if (msg == NULL)
+		return;
+	
+	g_free(msg->who);
+	g_free(msg->message);
+	g_free(msg);
+}
+
 void okc_send_im_cb(OkCupidAccount *oca, gchar *data, gsize data_len, gpointer user_data)
 {
 	OkCupidOutgoingMessage *msg = user_data;
@@ -306,7 +316,38 @@ void okc_send_im_cb(OkCupidAccount *oca, gchar *data, gsize data_len, gpointer u
              }
 
 	*/
-
+	JsonParser *parser;
+	JsonNode *root;
+	
+	parser = json_parser_new();
+	if(!json_parser_load_from_data(parser, data, data_len, NULL))
+	{
+		okc_msg_destroy(msg);
+		return;	
+	}
+	root = json_parser_get_root(parser);
+	JsonObject *response;
+	response = json_node_get_object(root);
+	
+	gint message_sent = json_node_get_int(json_object_get_member(response, "message_sent"));
+	
+	if (message_sent)
+	{
+		okc_msg_destroy(msg);
+		g_object_unref(parser);
+		return;
+	}
+	
+	const gchar *reason = json_node_get_string(json_object_get_member(response, "reason"));
+	if (g_str_equal(reason, "recip_not_online"))
+	{
+		serv_got_im(oca->pc, msg->who, _("Recipient not online"), PURPLE_MESSAGE_ERROR, time(NULL));
+	} else if (g_str_equal(reason, "im_self"))
+	{
+		serv_got_im(oca->pc, msg->who, _("You cannot send a message to yourself"), PURPLE_MESSAGE_ERROR, time(NULL));
+	}
+	
+	g_object_unref(parser);
 }
 
 gboolean okc_send_im_fom(OkCupidOutgoingMessage *msg)
