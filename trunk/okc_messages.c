@@ -75,6 +75,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 	/* { "server_gmt" : 1234171728, "server_seqid" : 28322813, "people" : [ { "screenname" : "Saturn2888", "location" : "Overland Park, Kansas, United States", "distance" : 8118, "distance_units" : "miles", "thumb" : "134x16/333x215/2/13750662203864942041.jpeg", "match" : 86, "friend" : 66, "enemy" : 6, "age" : 22, "gender" : "M", "orientation" : "S", "open_connection" : "1", "im_ok" : "1" } ], "events" : [ { "type" : "im", "from" : "Saturn2888", "server_gmt" : 1232701652, "server_seqid" : 9791021, "contents" : "test test" } , { "type" : "im", "to" : "Saturn2888", "server_gmt" : 1232701674, "server_seqid" : 9791217, "contents" : "chatty chatty" } , { "type" : "im", "from" : "Saturn2888", "server_gmt" : 1232701680, "server_seqid" : 9791280, "contents" : "nope" } , { "type" : "im", "to" : "Saturn2888", "server_gmt" : 1234171728, "server_seqid" : 28322813, "contents" : "hi?" } ] } */
 	/*  var response =  {"im_off" : 0, "events" : [{"server_gmt" : 1234171728, "server_seqid" : 28322813, "from" : "eionrobb", "contents" : "hi?", "type" : "im"}, {"server_gmt" : 1234172578, "server_seqid" : 28328267, "to" : "eionrobb", "contents" : "worked", "type" : "im"}, {"server_gmt" : 1242216197, "server_seqid" : 23732214, "from" : "eionrobb", "contents" : "test", "type" : "im"}], "num_unread" : 0, "server_gmt" : 1242216215, "people" : [{"thumb" : "0x0/0x0/2/15281378330166548237.jpeg", "open_connection" : 1, "gender" : "M", "age" : 25, "match" : 85, "screenname" : "eionrobb", "location" : "Christchurch, New Zealand", "im_ok" : 1, "orientation" : "S", "friend" : 66, "enemy" : 7, "distance" : 8118}], "server_seqid" : 23732214}
 	                    parent.InstantEvents.openConnection_cb(response, ""); */
+	/* {"im_off" : 0, "events" : [{"server_gmt" : 1242541572, "server_seqid" : 30129765, "from" : "Saturn2888", "contents" : "I'm getting double messages", "type" : "im"}], "server_seqid" : 30129765, "people" : [{"thumb" : "134x16/333x215/2/13750662203864942041.jpeg", "open_connection" : 1, "gender" : "M", "age" : 22, "match" : 85, "screenname" : "Saturn2888", "location" : "Overland Park, Kansas", "im_ok" : 1, "orientation" : "S", "friend" : 66, "enemy" : 7, "distance" : 8118}], "online_buddies" : [{"im_ok" : 1, "screenname" : "Saturn2888", "is_online" : 1, "userid" : 16335530578074790482}], "server_gmt" : 1242541572, "num_unread" : 2} */
 	
 	gchar *start_of_json = strchr(data, '{');
 	gchar *end_of_json = strrchr(data, '}');
@@ -116,6 +117,38 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 	if(json_object_has_member(objnode, "online_buddies"))
 		online_buddies = json_node_get_array(json_object_get_member(objnode, "online_buddies"));
 	
+	//Look through online_buddies first to add them to our buddy list (if necessary)
+	if (online_buddies != NULL)
+	{
+		GList *online_buddies_list = json_array_get_elements(online_buddies);
+		GList *current;
+		for (current = online_buddies_list; current; current = g_list_next(current))
+		{
+			JsonNode *currentNode = current->data;
+			JsonObject *buddy = json_node_get_object(currentNode);
+			
+			//"online_buddies" : [{"im_ok" : 1, "screenname" : "Saturn2888", "is_online" : 1, "userid" : 16335530578074790482}]
+			const gchar *buddy_name = json_node_get_string(json_object_get_member(buddy, "screenname"));
+			gint is_online = json_node_get_int(json_object_get_member(buddy, "is_online"));
+			PurpleBuddy *pbuddy = purple_find_buddy(oca->account, buddy_name);	
+			
+			if (!pbuddy)
+			{
+				pbuddy = purple_buddy_new(oca->account, buddy_name, NULL);
+				purple_blist_add_buddy(pbuddy, NULL, NULL, NULL);
+			}
+			
+			if (is_online && !PURPLE_BUDDY_IS_ONLINE(pbuddy))
+			{
+				purple_prpl_got_user_status(oca->account, buddy_name, purple_primitive_get_id_from_type(PURPLE_STATUS_AVAILABLE), NULL);
+			} else if (!is_online && PURPLE_BUDDY_IS_ONLINE(pbuddy))
+			{
+				purple_prpl_got_user_status(oca->account, buddy_name, purple_primitive_get_id_from_type(PURPLE_STATUS_OFFLINE), NULL);
+			}
+		}
+		g_list_free(online_buddies_list);
+	}
+	
 	//loop through events looking for messages
 	if (events != NULL)
 	{
@@ -144,9 +177,19 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 					who = json_node_get_string(json_object_get_member(event, "from"));
 					flags = PURPLE_MESSAGE_RECV;
 				}
-				if (who)
+				if (who && flags != PURPLE_MESSAGE_SEND)
 					serv_got_im (pc, who, message, flags, time(NULL));
 				g_free(message);
+			} else if (g_str_equal(event_type, "orbit_user_signoff"))
+			{
+				//buddy signed off
+				const gchar *buddy_name = json_node_get_string(json_object_get_member(event, "from"));
+				PurpleBuddy *pbuddy = purple_find_buddy(oca->account, buddy_name);
+				
+				if (pbuddy && PURPLE_BUDDY_IS_ONLINE(pbuddy))
+				{
+					purple_prpl_got_user_status(oca->account, buddy_name, purple_primitive_get_id_from_type(PURPLE_STATUS_OFFLINE), NULL);
+				}
 			}
 		}
 		g_list_free(event_list);
@@ -161,8 +204,8 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			JsonNode *currentNode = current->data;
 			JsonObject *person = json_node_get_object(currentNode);
 			
-			gchar *buddy_name = json_node_get_string(json_object_get_member(person, "screenname"));
-			gchar *buddy_icon = json_node_get_string(json_object_get_member(person, "thumb"));
+			const gchar *buddy_name = json_node_get_string(json_object_get_member(person, "screenname"));
+			const gchar *buddy_icon = json_node_get_string(json_object_get_member(person, "thumb"));
 			
 			gchar *tmp = g_strdup_printf("buddy_icon_%s_cache", buddy_name);
 			if (!g_str_equal(purple_account_get_string(oca->account, tmp, ""), buddy_icon))
@@ -178,23 +221,9 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 		g_list_free(people_list);
 	}
 	
-	if (unread_message_count != 0)
+	if (unread_message_count > 0)
 	{
-		//TODO display unread message count in email messages area
-	}
-	
-	if (online_buddies != NULL)
-	{
-		GList *online_buddies_list = json_array_get_elements(online_buddies);
-		GList *current;
-		for (current = online_buddies_list; current; current = g_list_next(current))
-		{
-			JsonNode *currentNode = current->data;
-			JsonObject *buddy = json_node_get_object(currentNode);
-			
-			//TODO find out what's in the online_buddies array
-		}
-		g_list_free(online_buddies_list);
+		purple_notify_emails(pc, unread_message_count, FALSE, NULL, NULL, NULL, NULL, NULL, NULL);
 	}
 	
 	if (json_object_has_member(objnode, "server_seqid"))
