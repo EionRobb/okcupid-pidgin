@@ -162,10 +162,9 @@ static void okc_login_cb(OkCupidAccount *oca, gchar *response, gsize len,
 	purple_connection_set_state(oca->pc, PURPLE_CONNECTED);
 
 	/* This will kick off our long-poll message retrieval loop */
-	okc_get_new_messages(oca);
+	okc_get_new_messages_now(oca);
 	
 	okc_get_online_buddies(oca);
-	okc_get_new_messages_now(oca);
 	
 	oca->perpetual_messages_timer = purple_timeout_add_seconds(15,
 			(GSourceFunc)okc_get_messages_failsafe, oca);
@@ -204,8 +203,6 @@ static void okc_login(PurpleAccount *account)
 			encoded_username, encoded_password);
 	g_free(encoded_username);
 	g_free(encoded_password);
-	
-	purple_debug_info("okcupid", "about to call post_or_get\n");
 
 	okc_post_or_get(oca, OKC_METHOD_POST, "www.okcupid.com",
 			"/login", postdata, okc_login_cb, NULL, FALSE);
