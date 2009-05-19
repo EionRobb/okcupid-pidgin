@@ -89,6 +89,9 @@ gboolean okc_get_online_buddies(gpointer data)
 	}
 	g_slist_free(buddies);
 	
+	if (usernames == NULL)
+		return TRUE;
+
 	url = g_strdup_printf("/instantevents?is_online=1&rand=0.%u&usernames=%s", g_random_int(), usernames);
 	
 	okc_post_or_get(oca, OKC_METHOD_GET, NULL, url,
@@ -149,8 +152,11 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 	JsonNode *root;
 	
 	parser = json_parser_new();
-	if(!json_parser_load_from_data(parser, data, data_len, NULL))
+	GError *error = NULL;
+	if(!json_parser_load_from_data(parser, data, data_len, &error))
 	{
+		purple_debug_error("okcupid", "got_info error: %s\n", error->message);
+		g_error_free(error);
 		g_free(username);
 		return;	
 	}
