@@ -165,6 +165,22 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			{
 				//instant message
 				const gchar *message = json_node_get_string(json_object_get_member(event, "contents"));
+				
+				//sometimes the message can be embedded within a JSON object :(
+				JsonParser *message_parser = json_parser_new();
+				if(json_parser_load_from_data(message_parser, message, -1, NULL))
+				{
+					//yep, its JSON :( -- this is ripe for injections :(
+					//{ "text" : "how good are you at bowling?  " , "topic" : false }
+					JsonNode *message_root = json_parser_get_root(parser);
+					JsonObject *message_object = json_node_get_object(message_root);
+					if (json_object_has_member(message_object, "text"))
+					{
+						message = json_node_get_string(json_object_get_member(message_object, "text"));
+					}
+					g_object_unref(message_parser);
+				}
+				
 				message = okc_strdup_withhtml(message);
 				const gchar *who = NULL;
 				PurpleMessageFlags flags;
@@ -344,7 +360,13 @@ void okc_send_im_cb(OkCupidAccount *oca, gchar *data, gsize data_len, gpointer u
 		serv_got_im(oca->pc, msg->who, _("Recipient not online"), PURPLE_MESSAGE_ERROR, time(NULL));
 	} else if (g_str_equal(reason, "im_self"))
 	{
-		serv_got_im(oca->pc, msg->who, _("You cannot send a message to yourself"), PURPLE_MESSAGE_ERROR, time(NULL));
+		serv_got_im(oca->pc, msg->who, _("You cannot send an IM to yourself"), PURPLE_MESSAGE_ERROR, time(NULL));
+	} else if (g_str_equal(reason, "im_not_ok"))
+	{
+		serv_got_im(oca->pc, msg->who, _("Recipient is 'missing'"), PURPLE_MESSAGE_ERROR, time(NULL));
+	} else if (g_str_equal(reason, "recip_im_off"))
+	{
+		serv_got_im(oca->pc, msg->who, _("Recipient turned IM off"), PURPLE_MESSAGE_ERROR, time(NULL));		
 	}
 	
 	g_object_unref(parser);
