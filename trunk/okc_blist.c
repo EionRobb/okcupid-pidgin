@@ -228,7 +228,7 @@ void okc_remove_buddy(PurpleConnection *pc, PurpleBuddy *buddy, PurpleGroup *gro
 	g_free(postdata);
 }
 
-void okc_block_buddy(PurpleConnection *, const char *name)
+void okc_block_buddy(PurpleConnection *pc, const char *name)
 {
 	gchar *block_url;
 	
