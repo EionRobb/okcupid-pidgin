@@ -358,7 +358,7 @@ gboolean okc_send_im_fom(OkCupidOutgoingMessage *msg)
 
 	encoded_message = g_strdup(purple_url_encode(msg->message));
 	encoded_recipient = g_strdup(purple_url_encode(msg->who));
-	postdata = g_strdup_printf("send=1&attempt=%d&rid=%d&recipient=%s&body=%s&rand=0.%d",
+	postdata = g_strdup_printf("send=1&attempt=%d&rid=%d&recipient=%s&topic=false&body=%s&rand=0.%d",
 			msg->retry_count + 1,
 			msg->rid,
 			encoded_recipient,
