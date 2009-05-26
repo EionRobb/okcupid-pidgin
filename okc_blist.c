@@ -205,3 +205,36 @@ void okc_get_info(PurpleConnection *pc, const gchar *uid)
 
 	g_free(profile_url);
 }
+
+void okc_add_buddy(PurpleConnection *pc, PurpleBuddy *buddy, PurpleGroup *group)
+{
+	gchar *postdata;
+	
+	postdata = g_strdup_printf("addbuddy=1&u=%s&ajax=1", purple_url_encode(buddy->name));
+	
+	okc_post_or_get(pc->proto_data, OKC_METHOD_POST, NULL, "/profile", postdata, NULL, NULL, FALSE);
+	
+	g_free(postdata);
+}
+
+void okc_remove_buddy(PurpleConnection *pc, PurpleBuddy *buddy, PurpleGroup *group)
+{
+	gchar *postdata;
+	
+	postdata = g_strdup_printf("removebuddy=1&u=%s&ajax=1", purple_url_encode(buddy->name));
+	
+	okc_post_or_get(pc->proto_data, OKC_METHOD_POST, NULL, "/profile", postdata, NULL, NULL, FALSE);
+	
+	g_free(postdata);
+}
+
+void okc_block_buddy(PurpleConnection *, const char *name)
+{
+	gchar *block_url;
+	
+	block_url = g_strdup_printf("/instantevents?im_block=1&target_screenname=%s", purple_url_encode(name));
+	
+	okc_post_or_get(pc->proto_data, OKC_METHOD_GET, NULL, block_url, NULL, NULL, NULL, FALSE);
+	
+	g_free(block_url);
+}

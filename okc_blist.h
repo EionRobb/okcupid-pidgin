@@ -26,5 +26,8 @@
 gboolean okc_get_online_buddies(gpointer data);
 void okc_blist_wink_buddy(PurpleBlistNode *node, gpointer data);
 void okc_get_info(PurpleConnection *pc, const gchar *uid);
+void okc_add_buddy(PurpleConnection *pc, PurpleBuddy *buddy, PurpleGroup *group);
+void okc_remove_buddy(PurpleConnection *pc, PurpleBuddy *buddy, PurpleGroup *group);
+void okc_block_buddy(PurpleConnection *, const char *name);
 
 #endif /* OKCUPID_BLIST_H */
