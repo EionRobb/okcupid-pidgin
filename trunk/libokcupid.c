@@ -309,12 +309,12 @@ static PurplePluginProtocolInfo prpl_info = {
 	NULL,                   /* set_status */
 	NULL,                   /* set_idle */
 	NULL,                   /* change_passwd */
-	/*okc_add_buddy*/NULL,          /* add_buddy */
-	NULL,                   /* add_buddies */
+	okc_add_buddy,          /* add_buddy */
+	okc_remove_buddy,       /* add_buddies */
 	NULL,                   /* remove_buddy */
 	NULL,                   /* remove_buddies */
 	NULL,                   /* add_permit */
-	NULL,                   /* add_deny */
+	okc_block_buddy,        /* add_deny */
 	NULL,                   /* rem_permit */
 	NULL,                   /* rem_deny */
 	NULL,                   /* set_permit_deny */
