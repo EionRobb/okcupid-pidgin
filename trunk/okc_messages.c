@@ -164,7 +164,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			if (g_str_equal(event_type, "im"))
 			{
 				//instant message
-				const gchar *message = json_node_get_string(json_object_get_member(event, "contents"));
+				gchar *message = json_node_dup_string(json_object_get_member(event, "contents"));
 				
 				//sometimes the message can be embedded within a JSON object :(
 				JsonParser *message_parser = json_parser_new();
@@ -172,16 +172,19 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 				{
 					//yep, its JSON :( -- this is ripe for injections :(
 					//{ "text" : "how good are you at bowling?  " , "topic" : false }
-					JsonNode *message_root = json_parser_get_root(parser);
+					JsonNode *message_root = json_parser_get_root(message_parser);
 					JsonObject *message_object = json_node_get_object(message_root);
 					if (json_object_has_member(message_object, "text"))
 					{
-						message = json_node_get_string(json_object_get_member(message_object, "text"));
+						g_free(message);
+						message = json_node_dup_string(json_object_get_member(message_object, "text"));
 					}
 					g_object_unref(message_parser);
 				}
 				
 				gchar *message_html = okc_strdup_withhtml(message);
+				g_free(message);
+				
 				const gchar *who = NULL;
 				PurpleMessageFlags flags;
 				if (json_object_has_member(event, "to"))
