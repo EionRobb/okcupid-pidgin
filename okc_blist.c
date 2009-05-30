@@ -118,7 +118,7 @@ void okc_blist_wink_buddy(PurpleBlistNode *node, gpointer data)
 	if (!oca)
 		return;
 	
-	postdata = g_strdup_printf("woo=1&u=%s&ajax=1", buddy->name);
+	postdata = g_strdup_printf("woo=1&u=%s&ajax=1", purple_url_encode(buddy->name));
 	
 	okc_post_or_get(oca, OKC_METHOD_POST, NULL, "/profile", postdata, NULL, NULL, FALSE);
 	
@@ -237,4 +237,27 @@ void okc_block_buddy(PurpleConnection *pc, const char *name)
 	okc_post_or_get(pc->proto_data, OKC_METHOD_GET, NULL, block_url, NULL, NULL, NULL, FALSE);
 	
 	g_free(block_url);
+}
+
+
+GList *okc_blist_node_menu(PurpleBlistNode *node)
+{
+	GList *m = NULL;
+	PurpleMenuAction *act;
+	PurpleBuddy *buddy;
+	
+	if(PURPLE_BLIST_NODE_IS_BUDDY(node))
+	{
+		act = purple_menu_action_new(_("_Wink"),
+										PURPLE_CALLBACK(okc_blist_wink_buddy),
+										NULL, NULL);
+		m = g_list_append(m, act);
+	} else if (PURPLE_BLIST_NODE_IS_CHAT(node))
+	{
+		
+	} else if (PURPLE_BLIST_NODE_IS_GROUP(node))
+	{
+		
+	}
+	return m;
 }

@@ -29,5 +29,6 @@ void okc_get_info(PurpleConnection *pc, const gchar *uid);
 void okc_add_buddy(PurpleConnection *pc, PurpleBuddy *buddy, PurpleGroup *group);
 void okc_remove_buddy(PurpleConnection *pc, PurpleBuddy *buddy, PurpleGroup *group);
 void okc_block_buddy(PurpleConnection *, const char *name);
+GList *okc_blist_node_menu(PurpleBlistNode *node);
 
 #endif /* OKCUPID_BLIST_H */

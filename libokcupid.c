@@ -297,7 +297,7 @@ static PurplePluginProtocolInfo prpl_info = {
 	NULL,                   /* status_text */
 	NULL,                   /* tooltip_text */
 	okc_statuses,           /* status_types */
-	NULL,                   /* blist_node_menu */
+	okc_blist_node_menu,    /* blist_node_menu */
 	NULL,                   /* chat_info */
 	NULL,                   /* chat_info_defaults */
 	okc_login,              /* login */
