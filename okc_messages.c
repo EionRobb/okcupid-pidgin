@@ -182,7 +182,9 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 					g_object_unref(message_parser);
 				}
 				
-				gchar *message_html = okc_strdup_withhtml(message);
+				gchar *message_stripped = purple_markup_strip_html(message);
+				g_free(message);
+				gchar *message_html = okc_strdup_withhtml(message_stripped);
 				
 				const gchar *who = NULL;
 				PurpleMessageFlags flags;
@@ -195,10 +197,10 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 					who = json_node_get_string(json_object_get_member(event, "from"));
 					flags = PURPLE_MESSAGE_RECV;
 				}
-				if (who && (flags != PURPLE_MESSAGE_SEND || !g_hash_table_remove(oca->sent_messages_hash, message)))
+				if (who && (flags != PURPLE_MESSAGE_SEND || !g_hash_table_remove(oca->sent_messages_hash, message_stripped)))
 					serv_got_im (pc, who, message_html, flags, time(NULL));
 				g_free(message_html);
-				g_free(message);
+				g_free(message_stripped);
 			} else if (g_str_equal(event_type, "orbit_user_signoff"))
 			{
 				//buddy signed off
