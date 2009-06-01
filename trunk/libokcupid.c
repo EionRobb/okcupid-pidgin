@@ -183,7 +183,11 @@ static void okc_login(PurpleAccount *account)
 	oca = g_new0(OkCupidAccount, 1);
 	oca->account = account;
 	oca->pc = purple_account_get_connection(account);
+	
 	oca->last_messages_download_time = time(NULL) - 60; /* 60 secs is a safe buffer */
+	oca->server_seqid = purple_account_get_int(oca->account, "server_seqid", 0);
+	oca->server_gmt = purple_account_get_int(oca->account, "server_gmt", 0);
+	
 	oca->cookie_table = g_hash_table_new_full(g_str_hash, g_str_equal,
 			g_free, g_free);
 	oca->hostname_ip_cache = g_hash_table_new_full(g_str_hash, g_str_equal,
@@ -246,6 +250,11 @@ static void okc_close(PurpleConnection *pc)
 	g_hash_table_destroy(oca->cookie_table);
 	g_hash_table_destroy(oca->hostname_ip_cache);
 	g_hash_table_destroy(oca->sent_messages_hash);
+	
+	//Store server_seqid and server_gmt so that we dont download all the messages on startup
+	purple_account_set_int(oca->account, "server_seqid", oca->server_seqid);
+	purple_account_set_int(oca->account, "server_gmt", oca->server_gmt);
+	
 	g_free(oca);
 }
 
