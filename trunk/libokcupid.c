@@ -188,6 +188,8 @@ static void okc_login(PurpleAccount *account)
 			g_free, g_free);
 	oca->hostname_ip_cache = g_hash_table_new_full(g_str_hash, g_str_equal,
 			g_free, g_free);
+	oca->sent_messages_hash = g_hash_table_new_full(g_str_hash, g_str_equal,
+			g_free, NULL);
 
 	account->gc->proto_data = oca;
 
@@ -243,6 +245,7 @@ static void okc_close(PurpleConnection *pc)
 
 	g_hash_table_destroy(oca->cookie_table);
 	g_hash_table_destroy(oca->hostname_ip_cache);
+	g_hash_table_destroy(oca->sent_messages_hash);
 	g_free(oca);
 }
 

@@ -86,6 +86,8 @@ struct _OkCupidAccount {
 	guint buddy_presence_timer;
 	guint server_seqid;
 	guint server_gmt;
+	guint last_message_count;
+	GHashTable *sent_messages_hash;
 };
 
 struct _OkCupidBuddy {
