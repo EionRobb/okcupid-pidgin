@@ -183,7 +183,6 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 				}
 				
 				gchar *message_html = okc_strdup_withhtml(message);
-				g_free(message);
 				
 				const gchar *who = NULL;
 				PurpleMessageFlags flags;
@@ -196,9 +195,10 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 					who = json_node_get_string(json_object_get_member(event, "from"));
 					flags = PURPLE_MESSAGE_RECV;
 				}
-				if (who && flags != PURPLE_MESSAGE_SEND)
+				if (who && (flags != PURPLE_MESSAGE_SEND || !g_hash_table_remove(oca->sent_messages_hash, message)))
 					serv_got_im (pc, who, message_html, flags, time(NULL));
 				g_free(message_html);
+				g_free(message);
 			} else if (g_str_equal(event_type, "orbit_user_signoff"))
 			{
 				//buddy signed off
@@ -240,10 +240,10 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 		g_list_free(people_list);
 	}
 	
-	//if (unread_message_count > 0)
-	//{
+	if (unread_message_count != oca->last_message_count)
+	{
 		purple_notify_emails(pc, unread_message_count, FALSE, NULL, NULL, &(oca->account->username), NULL, NULL, NULL);
-	//}
+	}
 	
 	if (json_object_has_member(objnode, "server_seqid"))
 		oca->server_seqid = json_node_get_int(json_object_get_member(objnode, "server_seqid"));
@@ -316,9 +316,12 @@ void okc_send_im_cb(OkCupidAccount *oca, gchar *data, gsize data_len, gpointer u
 {
 	OkCupidOutgoingMessage *msg = user_data;
 
-	/* NULL data crashes on Windows */
-	if (data == NULL)
-		data = "(null)";
+	if (data == NULL || data_len == 0)
+	{
+		//No response, resend message
+		okc_send_im_fom(msg);
+		return;
+	}
 	
 	purple_debug_misc("okcupid", "sent im response: %s\n", data);
 	
@@ -352,6 +355,9 @@ void okc_send_im_cb(OkCupidAccount *oca, gchar *data, gsize data_len, gpointer u
 	
 	if (message_sent)
 	{
+		//Save the message we sent
+		g_hash_table_insert(oca->sent_messages_hash, g_strdup(msg->message), NULL);
+		
 		okc_msg_destroy(msg);
 		g_object_unref(parser);
 		return;
@@ -372,6 +378,7 @@ void okc_send_im_cb(OkCupidAccount *oca, gchar *data, gsize data_len, gpointer u
 		serv_got_im(oca->pc, msg->who, _("Recipient turned IM off"), PURPLE_MESSAGE_ERROR, time(NULL));		
 	}
 	
+	okc_msg_destroy(msg);
 	g_object_unref(parser);
 }
 

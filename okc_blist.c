@@ -244,7 +244,6 @@ GList *okc_blist_node_menu(PurpleBlistNode *node)
 {
 	GList *m = NULL;
 	PurpleMenuAction *act;
-	PurpleBuddy *buddy;
 	
 	if(PURPLE_BLIST_NODE_IS_BUDDY(node))
 	{
