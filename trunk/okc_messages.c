@@ -244,7 +244,8 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 	
 	if (unread_message_count != oca->last_message_count)
 	{
-		purple_notify_emails(pc, unread_message_count, FALSE, NULL, NULL, &(oca->account->username), NULL, NULL, NULL);
+		oca->last_message_count = unread_message_count;
+		purple_notify_emails(pc, unread_message_count, FALSE, NULL, NULL, &(oca->account->username), &("http://www.okcupid.com/mailbox"), NULL, NULL);
 	}
 	
 	if (json_object_has_member(objnode, "server_seqid"))
