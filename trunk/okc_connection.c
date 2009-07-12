@@ -510,6 +510,8 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 	}
 	g_string_append_printf(request, "Accept: */*\r\n");
 	g_string_append_printf(request, "Cookie: %s\r\n", cookies);
+	g_string_append_printf(request, "Accept-Encoding: gzip\r\n");
+	
 	if (is_proxy == TRUE)
 	{
 		if (purple_proxy_info_get_username(proxy_info) &&
