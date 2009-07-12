@@ -291,7 +291,7 @@ static void plugin_init(PurplePlugin *plugin)
 	PurplePluginInfo *info = plugin->info;
 	PurplePluginProtocolInfo *prpl_info = info->extra_info;
 	
-	option = purple_account_option_bool_new("Ignore me", "okcupid_fake_setting", TRUE);
+	option = purple_account_option_bool_new("This box does nothing", "okcupid_fake_setting", TRUE);
 	prpl_info->protocol_options = g_list_append(prpl_info->protocol_options, option);
 	
 }
