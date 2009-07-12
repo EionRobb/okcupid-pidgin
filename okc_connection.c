@@ -185,7 +185,7 @@ static void okc_connection_process_data(OkCupidConnection *okconn)
 				okconn->rx_buf);
 		okc_update_cookies(okconn->oca, okconn->rx_buf);
 		
-		if (strstr(fbconn->rx_buf, "Content-Encoding: gzip"))
+		if (strstr(okconn->rx_buf, "Content-Encoding: gzip"))
 		{
 			/* we've received compressed gzip data, decompress */
 			gchar *gunzipped;
