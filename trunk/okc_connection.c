@@ -518,7 +518,7 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 			purple_proxy_info_get_password(proxy_info))
 		{
 			proxy_auth = g_strdup_printf("%s:%s", purple_proxy_info_get_username(proxy_info), purple_proxy_info_get_password(proxy_info));
-			proxy_auth_base64 = purple_base64_encode(proxy_auth, strlen(proxy_auth));
+			proxy_auth_base64 = purple_base64_encode((guchar *)proxy_auth, strlen(proxy_auth));
 			g_string_append_printf(request, "Proxy-Authorization: Basic %s\r\n", proxy_auth_base64);
 			g_free(proxy_auth_base64);
 			g_free(proxy_auth);
