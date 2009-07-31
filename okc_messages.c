@@ -141,7 +141,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 				pbuddy = purple_buddy_new(oca->account, buddy_name, NULL);
 				purple_blist_add_buddy(pbuddy, NULL, NULL, NULL);
 			} else {
-				purple_blist_node_set_flags(pbuddy->node, 0);
+				purple_blist_node_set_flags(&(pbuddy->node), 0);
 			}
 			
 			if (is_online && !PURPLE_BUDDY_IS_ONLINE(pbuddy))
@@ -240,7 +240,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 				//Not everyone we talk to will be on our buddylist
 				pbuddy = purple_buddy_new(oca->account, buddy_name, NULL);
 				purple_blist_add_buddy(pbuddy, NULL, NULL, NULL);
-				purple_blist_node_set_flags(pbuddy->node, PURPLE_BLIST_NODE_FLAG_NO_SAVE);
+				purple_blist_node_set_flags(&(pbuddy->node), PURPLE_BLIST_NODE_FLAG_NO_SAVE);
 			}
 			if (pbuddy != NULL)
 			{
