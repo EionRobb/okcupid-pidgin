@@ -151,6 +151,15 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 	JsonParser *parser;
 	JsonNode *root;
 	
+	PurpleNotifyUserInfo *user_info;
+	user_info = purple_notify_user_info_new();
+	/* Insert link to profile at top */
+	value_tmp = g_strdup_printf("<a href=\"http://www.okcupid.com/profile/%s\">%s</a>",
+								username, _("View web profile"));
+	purple_notify_user_info_add_pair(user_info, NULL, value_tmp);
+	purple_notify_user_info_add_section_break(user_info);
+	g_free(value_tmp);
+	
 	parser = json_parser_new();
 	GError *error = NULL;
 	if(!json_parser_load_from_data(parser, data, data_len, &error))
@@ -158,14 +167,15 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 		purple_debug_error("okcupid", "got_info error: %s\n", error->message);
 		g_error_free(error);
 		g_free(username);
+		
+		purple_notify_userinfo(oca->pc, username, user_info, NULL, NULL);
+		purple_notify_user_info_destroy(user_info);
+		
 		return;	
 	}
 	root = json_parser_get_root(parser);
 	JsonObject *info;
-	info = json_node_get_object(root);	
-
-	PurpleNotifyUserInfo *user_info;
-	user_info = purple_notify_user_info_new();
+	info = json_node_get_object(root);
 	
 	purple_notify_user_info_add_pair(user_info, _("Age"), json_node_get_string(json_object_get_member(info, "age")));
 	purple_notify_user_info_add_pair(user_info, _("Gender"), json_node_get_string(json_object_get_member(info, "gender")));
@@ -177,11 +187,12 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 	purple_notify_user_info_add_pair(user_info, _("Friend"), json_node_get_string(json_object_get_member(info, "friend")));
 	
 	const gchar *buddy_icon = json_node_get_string(json_object_get_member(info, "thumb"));
-	gchar *tmp = g_strdup_printf("buddy_icon_%s_cache", username);
-	if (!g_str_equal(purple_account_get_string(oca->account, tmp, ""), buddy_icon))
+	PurpleBuddy *buddy = purple_find_buddy(oca->account, username);
+	if (!g_str_equal(purple_buddy_icons_get_checksum_for_user(buddy), buddy_icon))
 	{
-		/* Save the buddy icon so that they don't all need to be reloaded at startup */
-		purple_account_set_string(oca->account, tmp, buddy_icon);
+		g_free(obuddy->thumb_url);
+		obuddy->thumb_url = g_strdup(buddy_icon);
+		
 		gchar *buddy_icon_url = g_strdup_printf("/php/load_okc_image.php/images/%s", buddy_icon);
 		okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, buddy_icon_cb, g_strdup(username), FALSE);
 		g_free(buddy_icon_url);

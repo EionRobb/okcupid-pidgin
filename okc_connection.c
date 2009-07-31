@@ -42,7 +42,7 @@ static gchar *okc_gunzip(const guchar *gzip_data, ssize_t *len_ptr)
 	if (gzip_err != Z_OK)
 	{
 		g_free(data_buffer);
-		purple_debug_error("facebook", "no built-in gzip support in zlib\n");
+		purple_debug_error("okcupid", "no built-in gzip support in zlib\n");
 		return NULL;
 	}
 	
@@ -61,7 +61,7 @@ static gchar *okc_gunzip(const guchar *gzip_data, ssize_t *len_ptr)
 		if (gzip_err != Z_OK)
 		{
 			g_free(data_buffer);
-			purple_debug_error("facebook", "Cannot decode gzip header\n");
+			purple_debug_error("okcupid", "Cannot decode gzip header\n");
 			return NULL;
 		}
 		zstr.next_in = (Bytef *)gzip_data;
@@ -84,7 +84,7 @@ static gchar *okc_gunzip(const guchar *gzip_data, ssize_t *len_ptr)
 	{
 		output_string = g_string_append_len(output_string, data_buffer, gzip_len - zstr.avail_out);
 	} else {
-		purple_debug_error("facebook", "gzip inflate error\n");
+		purple_debug_error("okcupid", "gzip inflate error\n");
 	}
 	inflateEnd(&zstr);
 
