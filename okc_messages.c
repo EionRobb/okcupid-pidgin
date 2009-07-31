@@ -140,6 +140,8 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			{
 				pbuddy = purple_buddy_new(oca->account, buddy_name, NULL);
 				purple_blist_add_buddy(pbuddy, NULL, NULL, NULL);
+			} else {
+				purple_blist_node_set_flags(pbuddy->node, 0);
 			}
 			
 			if (is_online && !PURPLE_BUDDY_IS_ONLINE(pbuddy))
@@ -233,17 +235,29 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			const gchar *buddy_icon = json_node_get_string(json_object_get_member(person, "thumb"));
 			
 			PurpleBuddy *pbuddy = purple_find_buddy(oca->account, buddy_name);
-			
-			if (!g_str_equal(purple_buddy_icons_get_checksum_for_user(buddy), buddy_icon))
+			if (pbuddy == NULL)
 			{
-				g_free(obuddy->thumb_url);
-				obuddy->thumb_url = g_strdup(buddy_icon);
-				
-				gchar *buddy_icon_url = g_strdup_printf("/php/load_okc_image.php/images/%s", buddy_icon);
-				okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, buddy_icon_cb, g_strdup(buddy_name), FALSE);
-				g_free(buddy_icon_url);
+				//Not everyone we talk to will be on our buddylist
+				pbuddy = purple_buddy_new(oca->account, buddy_name, NULL);
+				purple_blist_add_buddy(pbuddy, NULL, NULL, NULL);
+				purple_blist_node_set_flags(pbuddy->node, PURPLE_BLIST_NODE_FLAG_NO_SAVE);
 			}
-			g_free(tmp);
+			if (pbuddy != NULL)
+			{
+				OkCupidBuddy *obuddy = pbuddy->proto_data;
+				if (!g_str_equal(purple_buddy_icons_get_checksum_for_user(pbuddy), buddy_icon))
+				{
+					if (obuddy != NULL)
+					{
+						g_free(obuddy->thumb_url);
+						obuddy->thumb_url = g_strdup(buddy_icon);
+					}
+					
+					gchar *buddy_icon_url = g_strdup_printf("/php/load_okc_image.php/images/%s", buddy_icon);
+					okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, buddy_icon_cb, g_strdup(buddy_name), FALSE);
+					g_free(buddy_icon_url);
+				}
+			}
 		}
 		g_list_free(people_list);
 	}
