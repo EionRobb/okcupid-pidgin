@@ -134,7 +134,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			//"online_buddies" : [{"im_ok" : 1, "screenname" : "Saturn2888", "is_online" : 1, "userid" : 16335530578074790482}]
 			const gchar *buddy_name = json_node_get_string(json_object_get_member(buddy, "screenname"));
 			gint is_online = json_node_get_int(json_object_get_member(buddy, "is_online"));
-			PurpleBuddy *pbuddy = purple_find_buddy(oca->account, buddy_name);	
+			PurpleBuddy *pbuddy = purple_find_buddy(oca->account, buddy_name);
 			
 			if (!pbuddy)
 			{
@@ -142,6 +142,22 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 				purple_blist_add_buddy(pbuddy, NULL, NULL, NULL);
 			} else {
 				purple_blist_node_set_flags(&(pbuddy->node), 0);
+			}
+			OkCupidBuddy *obuddy = pbuddy->proto_data;
+			if (obuddy == NULL)
+			{
+				gchar *buddy_icon_url;
+				
+				fbuddy = g_new0(OkCupidBuddy, 1);
+				fbuddy->buddy = pbuddy;
+				fbuddy->oca = oca;
+				
+				// load the old buddy icon url from the icon 'checksum'
+				buddy_icon_url = (char *)purple_buddy_icons_get_checksum_for_user(pbuddy);
+				if (buddy_icon_url != NULL)
+					obuddy->thumb_url = g_strdup(buddy_icon_url);
+				
+				pbuddy->proto_data = obuddy;				
 			}
 			
 			if (is_online && !PURPLE_BUDDY_IS_ONLINE(pbuddy))
@@ -245,7 +261,22 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			if (pbuddy != NULL)
 			{
 				OkCupidBuddy *obuddy = pbuddy->proto_data;
-				if (!g_str_equal(purple_buddy_icons_get_checksum_for_user(pbuddy), buddy_icon))
+				if (obuddy == NULL)
+				{
+					gchar *buddy_icon_url;
+					
+					fbuddy = g_new0(OkCupidBuddy, 1);
+					fbuddy->buddy = pbuddy;
+					fbuddy->oca = oca;
+					
+					// load the old buddy icon url from the icon 'checksum'
+					buddy_icon_url = (char *)purple_buddy_icons_get_checksum_for_user(pbuddy);
+					if (buddy_icon_url != NULL)
+						obuddy->thumb_url = g_strdup(buddy_icon_url);
+					
+					pbuddy->proto_data = obuddy;				
+				}			
+				if (!g_str_equal(obuddy->thumb_url), buddy_icon))
 				{
 					if (obuddy != NULL)
 					{

@@ -93,10 +93,6 @@ struct _OkCupidAccount {
 struct _OkCupidBuddy {
 	OkCupidAccount *oca;
 	PurpleBuddy *buddy;
-	gint32 uid;
-	gchar *name;
-	gchar *status;
-	gchar *status_rel_time;
 	gchar *thumb_url;
 };
 
