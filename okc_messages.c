@@ -148,9 +148,9 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			{
 				gchar *buddy_icon_url;
 				
-				fbuddy = g_new0(OkCupidBuddy, 1);
-				fbuddy->buddy = pbuddy;
-				fbuddy->oca = oca;
+				obuddy = g_new0(OkCupidBuddy, 1);
+				obuddy->buddy = pbuddy;
+				obuddy->oca = oca;
 				
 				// load the old buddy icon url from the icon 'checksum'
 				buddy_icon_url = (char *)purple_buddy_icons_get_checksum_for_user(pbuddy);
@@ -265,9 +265,9 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 				{
 					gchar *buddy_icon_url;
 					
-					fbuddy = g_new0(OkCupidBuddy, 1);
-					fbuddy->buddy = pbuddy;
-					fbuddy->oca = oca;
+					obuddy = g_new0(OkCupidBuddy, 1);
+					obuddy->buddy = pbuddy;
+					obuddy->oca = oca;
 					
 					// load the old buddy icon url from the icon 'checksum'
 					buddy_icon_url = (char *)purple_buddy_icons_get_checksum_for_user(pbuddy);
@@ -276,13 +276,10 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 					
 					pbuddy->proto_data = obuddy;				
 				}			
-				if (!g_str_equal(obuddy->thumb_url), buddy_icon))
+				if (!obuddy->thumb_url || !g_str_equal(obuddy->thumb_url, buddy_icon))
 				{
-					if (obuddy != NULL)
-					{
-						g_free(obuddy->thumb_url);
-						obuddy->thumb_url = g_strdup(buddy_icon);
-					}
+					g_free(obuddy->thumb_url);
+					obuddy->thumb_url = g_strdup(buddy_icon);
 					
 					gchar *buddy_icon_url = g_strdup_printf("/php/load_okc_image.php/images/%s", buddy_icon);
 					okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, buddy_icon_cb, g_strdup(buddy_name), FALSE);

@@ -188,22 +188,23 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 	
 	const gchar *buddy_icon = json_node_get_string(json_object_get_member(info, "thumb"));
 	PurpleBuddy *buddy = purple_find_buddy(oca->account, username);
+	OkCupidBuddy *obuddy = buddy->proto_data;
 	if (obuddy == NULL)
 	{
 		gchar *buddy_icon_url;
 		
-		fbuddy = g_new0(OkCupidBuddy, 1);
-		fbuddy->buddy = pbuddy;
-		fbuddy->oca = oca;
+		obuddy = g_new0(OkCupidBuddy, 1);
+		obuddy->buddy = buddy;
+		obuddy->oca = oca;
 		
 		// load the old buddy icon url from the icon 'checksum'
-		buddy_icon_url = (char *)purple_buddy_icons_get_checksum_for_user(pbuddy);
+		buddy_icon_url = (char *)purple_buddy_icons_get_checksum_for_user(buddy);
 		if (buddy_icon_url != NULL)
 			obuddy->thumb_url = g_strdup(buddy_icon_url);
 		
-		pbuddy->proto_data = obuddy;				
+		buddy->proto_data = obuddy;				
 	}	
-	if (!g_str_equal(obuddy->thumb_url, buddy_icon))
+	if (!obuddy->thumb_url || !g_str_equal(obuddy->thumb_url, buddy_icon))
 	{
 		g_free(obuddy->thumb_url);
 		obuddy->thumb_url = g_strdup(buddy_icon);		
