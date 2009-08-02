@@ -192,7 +192,7 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 	{
 		if (buddy && buddy->proto_data)
 		{
-			OkCupidBuddy obuddy = buddy->proto_data;
+			OkCupidBuddy *obuddy = buddy->proto_data;
 			g_free(obuddy->thumb_url);
 			obuddy->thumb_url = g_strdup(buddy_icon);
 		}
