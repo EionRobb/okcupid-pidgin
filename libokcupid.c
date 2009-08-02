@@ -265,7 +265,6 @@ static void okc_buddy_free(PurpleBuddy *buddy)
 	{
 		buddy->proto_data = NULL;
 
-		g_free(obuddy->name);
 		g_free(obuddy->thumb_url);
 		g_free(obuddy);
 	}

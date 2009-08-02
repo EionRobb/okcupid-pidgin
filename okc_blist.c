@@ -188,15 +188,25 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 	
 	const gchar *buddy_icon = json_node_get_string(json_object_get_member(info, "thumb"));
 	PurpleBuddy *buddy = purple_find_buddy(oca->account, username);
-	if (!g_str_equal(purple_buddy_icons_get_checksum_for_user(buddy), buddy_icon))
+	if (obuddy == NULL)
 	{
-		if (buddy && buddy->proto_data)
-		{
-			OkCupidBuddy *obuddy = buddy->proto_data;
-			g_free(obuddy->thumb_url);
-			obuddy->thumb_url = g_strdup(buddy_icon);
-		}
+		gchar *buddy_icon_url;
 		
+		fbuddy = g_new0(OkCupidBuddy, 1);
+		fbuddy->buddy = pbuddy;
+		fbuddy->oca = oca;
+		
+		// load the old buddy icon url from the icon 'checksum'
+		buddy_icon_url = (char *)purple_buddy_icons_get_checksum_for_user(pbuddy);
+		if (buddy_icon_url != NULL)
+			obuddy->thumb_url = g_strdup(buddy_icon_url);
+		
+		pbuddy->proto_data = obuddy;				
+	}	
+	if (!g_str_equal(obuddy->thumb_url, buddy_icon))
+	{
+		g_free(obuddy->thumb_url);
+		obuddy->thumb_url = g_strdup(buddy_icon);		
 		gchar *buddy_icon_url = g_strdup_printf("/php/load_okc_image.php/images/%s", buddy_icon);
 		okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, buddy_icon_cb, g_strdup(username), FALSE);
 		g_free(buddy_icon_url);
