@@ -209,7 +209,7 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 		g_free(obuddy->thumb_url);
 		obuddy->thumb_url = g_strdup(buddy_icon);		
 		gchar *buddy_icon_url = g_strdup_printf("/php/load_okc_image.php/images/%s", buddy_icon);
-		okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, buddy_icon_cb, g_strdup(username), FALSE);
+		okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, okc_buddy_icon_cb, g_strdup(username), FALSE);
 		g_free(buddy_icon_url);
 	}
 	
