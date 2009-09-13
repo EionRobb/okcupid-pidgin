@@ -36,7 +36,7 @@ struct _OkCupidOutgoingMessage {
 
 gboolean okc_send_im_fom(OkCupidOutgoingMessage *msg);
 
-void buddy_icon_cb(OkCupidAccount *oca, gchar *data, gsize data_len,
+void okc_buddy_icon_cb(OkCupidAccount *oca, gchar *data, gsize data_len,
 		gpointer user_data)
 {
 	gchar *buddyname;
@@ -52,11 +52,9 @@ void buddy_icon_cb(OkCupidAccount *oca, gchar *data, gsize data_len,
 
 	buddy = purple_find_buddy(oca->account, buddyname);
 	g_free(buddyname);
-	if (buddy == NULL)
+	if (buddy == NULL || buddy->proto_data == NULL)
 		return;
 	obuddy = buddy->proto_data;
-	if (obuddy == NULL)
-		return;
 
 	buddy_icon_data = g_memdup(data, data_len);
 
@@ -252,7 +250,18 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			
 			PurpleBuddy *pbuddy = purple_find_buddy(oca->account, buddy_name);
 			if (pbuddy == NULL)
+			
+			// load the old buddy icon url from the icon 'checksum'
+			buddy_icon_url = (char *)
+				purple_buddy_icons_get_checksum_for_user(buddy);
+			
+			if (!g_str_equal(buddy_icon_url, buddy_icon))
 			{
+				if (buddy_icon_url != NULL)
+					obuddy->thumb_url = g_strdup(buddy_icon_url);
+				gchar *buddy_icon_url = g_strdup_printf("/php/load_okc_image.php/images/%s", buddy_icon);
+				okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, okc_buddy_icon_cb, g_strdup(buddy_name), FALSE);
+				g_free(buddy_icon_url);
 				//Not everyone we talk to will be on our buddylist
 				pbuddy = purple_buddy_new(oca->account, buddy_name, NULL);
 				purple_blist_add_buddy(pbuddy, NULL, NULL, NULL);
