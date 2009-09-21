@@ -217,7 +217,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 					who = json_node_get_string(json_object_get_member(event, "from"));
 					flags = PURPLE_MESSAGE_RECV;
 				}
-				if (who && (flags != PURPLE_MESSAGE_SEND || !g_hash_table_remove(oca->sent_messages_hash, message_stripped)))
+				if (who && (flags != PURPLE_MESSAGE_SEND || purple_account_get_bool(oca->account, "show_sent_messages", FALSE)))
 					serv_got_im (pc, who, message_html, flags, time(NULL));
 				g_free(message_stripped);
 				g_free(message_html);
@@ -408,7 +408,6 @@ void okc_send_im_cb(OkCupidAccount *oca, gchar *data, gsize data_len, gpointer u
 	{
 		//Save the message we sent
 		purple_debug_info("okcupid", "putting message into hashtable: '%s'\n", msg->message);
-		g_hash_table_insert(oca->sent_messages_hash, g_strdup(msg->message), NULL);
 		
 		okc_msg_destroy(msg);
 		g_object_unref(parser);
@@ -479,6 +478,11 @@ int okc_send_im(PurpleConnection *pc, const gchar *who, const gchar *message, Pu
 	msg->retry_count = 0;
 
 	okc_send_im_fom(msg);
+	
+	if (purple_account_get_bool(pc->account, "show_sent_messages", FALSE))
+	{
+		return 0;
+	}
 
 	return strlen(message);
 }
