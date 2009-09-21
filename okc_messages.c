@@ -31,7 +31,7 @@ struct _OkCupidOutgoingMessage {
 	gchar *message;
 	gint msg_id;
 	guint retry_count;
-	guint rid;
+	gint rid;
 };
 
 gboolean okc_send_im_fom(OkCupidOutgoingMessage *msg);
@@ -66,6 +66,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 		gsize data_len, gpointer userdata)
 {
 	PurpleConnection *pc = userdata;
+	gchar *buddy_icon_url;
 
 	/* NULL data will crash on Windows */
 	if (data == NULL)
@@ -143,9 +144,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			}
 			OkCupidBuddy *obuddy = pbuddy->proto_data;
 			if (obuddy == NULL)
-			{
-				gchar *buddy_icon_url;
-				
+			{				
 				obuddy = g_new0(OkCupidBuddy, 1);
 				obuddy->buddy = pbuddy;
 				obuddy->oca = oca;
@@ -203,6 +202,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 				}
 				
 				gchar *message_stripped = purple_markup_strip_html(message);
+				purple_debug_info("okcupid", "checking message in hashtable: '%s'\n", message_stripped);
 				g_free(message);
 				gchar *message_html = okc_strdup_withhtml(message_stripped);
 				
@@ -219,8 +219,8 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 				}
 				if (who && (flags != PURPLE_MESSAGE_SEND || !g_hash_table_remove(oca->sent_messages_hash, message_stripped)))
 					serv_got_im (pc, who, message_html, flags, time(NULL));
-				g_free(message_html);
 				g_free(message_stripped);
+				g_free(message_html);
 			} else if (g_str_equal(event_type, "orbit_user_signoff"))
 			{
 				//buddy signed off
@@ -249,19 +249,8 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			const gchar *buddy_icon = json_node_get_string(json_object_get_member(person, "thumb"));
 			
 			PurpleBuddy *pbuddy = purple_find_buddy(oca->account, buddy_name);
-			if (pbuddy == NULL)
-			
-			// load the old buddy icon url from the icon 'checksum'
-			buddy_icon_url = (char *)
-				purple_buddy_icons_get_checksum_for_user(buddy);
-			
-			if (!g_str_equal(buddy_icon_url, buddy_icon))
+			if (!pbuddy)
 			{
-				if (buddy_icon_url != NULL)
-					obuddy->thumb_url = g_strdup(buddy_icon_url);
-				gchar *buddy_icon_url = g_strdup_printf("/php/load_okc_image.php/images/%s", buddy_icon);
-				okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, okc_buddy_icon_cb, g_strdup(buddy_name), FALSE);
-				g_free(buddy_icon_url);
 				//Not everyone we talk to will be on our buddylist
 				pbuddy = purple_buddy_new(oca->account, buddy_name, NULL);
 				purple_blist_add_buddy(pbuddy, NULL, NULL, NULL);
@@ -291,7 +280,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 					obuddy->thumb_url = g_strdup(buddy_icon);
 					
 					gchar *buddy_icon_url = g_strdup_printf("/php/load_okc_image.php/images/%s", buddy_icon);
-					okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, buddy_icon_cb, g_strdup(buddy_name), FALSE);
+					okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, okc_buddy_icon_cb, g_strdup(buddy_name), FALSE);
 					g_free(buddy_icon_url);
 				}
 			}
@@ -418,6 +407,7 @@ void okc_send_im_cb(OkCupidAccount *oca, gchar *data, gsize data_len, gpointer u
 	if (message_sent)
 	{
 		//Save the message we sent
+		purple_debug_info("okcupid", "putting message into hashtable: '%s'\n", msg->message);
 		g_hash_table_insert(oca->sent_messages_hash, g_strdup(msg->message), NULL);
 		
 		okc_msg_destroy(msg);
@@ -482,7 +472,7 @@ int okc_send_im(PurpleConnection *pc, const gchar *who, const gchar *message, Pu
 		g_free(msg);
 		return -E2BIG;
 	}
-
+	
 	msg->rid = g_random_int_range(0, 2000000000); /* just fits inside a 32bit int */
 	msg->who = g_strdup(who);
 	msg->time = time(NULL);
