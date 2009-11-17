@@ -125,6 +125,31 @@ void okc_blist_wink_buddy(PurpleBlistNode *node, gpointer data)
 	g_free(postdata);
 }
 
+static gchar *okc_fix_json(const gchar *data)
+{
+	gchar *output;
+	gchar *temp;
+
+#define okc_replace(a,b) (purple_strreplace(a, "\n " b " : ", "\n \"" b "\" : "))
+
+	temp = okc_replace(data, "screenname"); output = temp;
+	temp = okc_replace(output, "uid"); g_free(output); output = temp;
+	temp = okc_replace(output, "age"); g_free(output); output = temp;
+	temp = okc_replace(output, "gender"); g_free(output); output = temp;
+	temp = okc_replace(output, "sexpref"); g_free(output); output = temp;
+	temp = okc_replace(output, "thumb"); g_free(output); output = temp;
+	temp = okc_replace(output, "pics"); g_free(output); output = temp;
+	temp = okc_replace(output, "location"); g_free(output); output = temp;
+	temp = okc_replace(output, "relationshipstatus"); g_free(output); output = temp;
+	temp = okc_replace(output, "match"); g_free(output); output = temp;
+	temp = okc_replace(output, "enemy"); g_free(output); output = temp;
+	temp = okc_replace(output, "friend"); g_free(output); output = temp;
+	temp = okc_replace(output, "success"); g_free(output); output = temp;
+	temp = okc_replace(output, "lastipaddress"); g_free(output); output = temp;
+	
+	return output;
+}
+
 void okc_got_info(OkCupidAccount *oca, gchar *data,
 		gsize data_len, gpointer userdata)
 {
@@ -132,7 +157,7 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 	JsonParser *parser;
 	JsonNode *root;
 	PurpleNotifyUserInfo *user_info;
-	gchar *value_tmp;
+	gchar *value_tmp, *fixeddata;
 	GError *error = NULL;
 	JsonObject *info;
 	
@@ -165,14 +190,21 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 	parser = json_parser_new();
 	if(!json_parser_load_from_data(parser, data, data_len, &error))
 	{
-		purple_debug_error("okcupid", "got_info error: %s\n", error->message);
-		g_error_free(error);
-		g_free(username);
-		
-		purple_notify_userinfo(oca->pc, username, user_info, NULL, NULL);
-		purple_notify_user_info_destroy(user_info);
-		
-		return;	
+		//There was an error.  Try 'fixing' the data then loading it again
+		fixeddata = okc_fix_json(data);
+		if (!json_parser_load_from_data(parser, fixeddata, -1, &error))
+		{
+			g_free(fixeddata);
+			purple_debug_error("okcupid", "got_info error: %s\n", error->message);
+			g_error_free(error);
+			g_free(username);
+			
+			purple_notify_userinfo(oca->pc, username, user_info, NULL, NULL);
+			purple_notify_user_info_destroy(user_info);
+			
+			return;	
+		}
+		g_free(fixeddata);
 	}
 	root = json_parser_get_root(parser);
 	info = json_node_get_object(root);
