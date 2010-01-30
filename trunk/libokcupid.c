@@ -156,7 +156,32 @@ static gboolean okc_get_messages_failsafe(OkCupidAccount *oca)
 static void okc_login_cb(OkCupidAccount *oca, gchar *response, gsize len,
 		gpointer userdata)
 {
+	JsonParser *parser;
+	JsonNode *root;
+	JsonObject *message;
+	gint status;
+
 	purple_connection_update_progress(oca->pc, _("Authenticating"), 2, 3);
+
+	if (!response)
+	{
+		purple_connection_error(oca->pc, "No login response");
+		return;
+	}
+	parser = json_parser_new();
+	if (!json_parser_load_from_data(parser, response, len, NULL))
+	{
+		purple_connection_error(oca->pc, "Error parsing login response");
+		return;
+	}
+	root = json_parser_get_root(parser);
+	message = json_node_get_object(root);
+	status = json_node_get_int(json_object_get_member(message, "status"));
+	if (status >= 100)
+	{
+		purple_connection_error(oca->pc, "Bad username or password");
+		return;
+	}
 
 	/* ok, we're logged in now! */
 	purple_connection_set_state(oca->pc, PURPLE_CONNECTED);
@@ -164,12 +189,8 @@ static void okc_login_cb(OkCupidAccount *oca, gchar *response, gsize len,
 	/* This will kick off our long-poll message retrieval loop */
 	okc_get_new_messages_now(oca);
 	
-	okc_get_online_buddies(oca);
-	
 	oca->perpetual_messages_timer = purple_timeout_add_seconds(15,
 			(GSourceFunc)okc_get_messages_failsafe, oca);
-	oca->buddy_presence_timer = purple_timeout_add_seconds(60,
-			(GSourceFunc)okc_get_online_buddies, oca);
 }
 
 static void okc_login(PurpleAccount *account)
@@ -203,12 +224,12 @@ static void okc_login(PurpleAccount *account)
 	encoded_password = g_strdup(purple_url_encode(
 			purple_account_get_password(account)));
 
-	postdata = g_strdup_printf("p=&username=%s&password=%s&forever=on&submit=Login",
+	postdata = g_strdup_printf("username=%s&password=%s",
 			encoded_username, encoded_password);
 	g_free(encoded_username);
 	g_free(encoded_password);
 
-	okc_post_or_get(oca, OKC_METHOD_POST, "www.okcupid.com",
+	okc_post_or_get(oca, OKC_METHOD_POST | OKC_METHOD_SSL, "www.okcupid.com",
 			"/login", postdata, okc_login_cb, NULL, FALSE);
 	g_free(postdata);
 }

@@ -22,6 +22,7 @@
 #define OKCUPID_CONNECTION_H
 
 #include "libokcupid.h"
+#include <core.h>
 #include <zlib.h>
 
 /*

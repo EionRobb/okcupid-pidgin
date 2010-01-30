@@ -181,8 +181,8 @@ static void okc_connection_process_data(OkCupidConnection *okconn)
 		tmp = g_memdup(tmp, len + 1);
 		tmp[len] = '\0';
 		okconn->rx_buf[okconn->rx_len - len] = '\0';
-		purple_debug_misc("okcupid", "response headers\n%s\n",
-				okconn->rx_buf);
+		//purple_debug_misc("okcupid", "response headers\n%s\n",
+		//		okconn->rx_buf);
 		okc_update_cookies(okconn->oca, okconn->rx_buf);
 		
 		if (strstr(okconn->rx_buf, "Content-Encoding: gzip"))
@@ -453,7 +453,6 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 	OkCupidConnection *okconn;
 	gchar *real_url;
 	gboolean is_proxy = FALSE;
-	const gchar *user_agent;
 	const gchar* const *languages;
 	gchar *language_names;
 	PurpleProxyInfo *proxy_info = NULL;
@@ -486,7 +485,6 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 	}
 	
 	cookies = okc_cookies_to_string(oca);
-	user_agent = purple_account_get_string(oca->account, "user-agent", "Opera/9.50 (Windows NT 5.1; U; en-GB)");
 	
 	if (method & OKC_METHOD_POST && !postdata)
 		postdata = "";
@@ -501,7 +499,7 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 		g_string_append_printf(request, "Host: %s\r\n", host);
 	g_string_append_printf(request, "Connection: %s\r\n",
 			(keepalive ? "Keep-Alive" : "close"));
-	g_string_append_printf(request, "User-Agent: %s\r\n", user_agent);
+	g_string_append_printf(request, "User-Agent: %s (libpurple %s)\r\n", purple_core_get_ui(), purple_core_get_version());
 	if (method & OKC_METHOD_POST) {
 		g_string_append_printf(request,
 				"Content-Type: application/x-www-form-urlencoded\r\n");
@@ -511,6 +509,7 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 	g_string_append_printf(request, "Accept: */*\r\n");
 	g_string_append_printf(request, "Cookie: %s\r\n", cookies);
 	g_string_append_printf(request, "Accept-Encoding: gzip\r\n");
+	g_string_append_printf(request, "X-OkCupid-Api-Version: 1\r\n");
 	
 	if (is_proxy == TRUE)
 	{
