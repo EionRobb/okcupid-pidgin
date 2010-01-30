@@ -21,7 +21,7 @@
 #ifndef LIBOKCUPID_H
 #define LIBOKCUPID_H
 
-#define OKCUPID_PLUGIN_VERSION "0.01"
+#define OKCUPID_PLUGIN_VERSION "1.0"
 
 #include <glib.h>
 

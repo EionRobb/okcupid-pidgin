@@ -75,11 +75,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 	purple_debug_misc("okcupid", "got new messages: %s\n", data);
 
 	/* Process incomming messages here */
-	/* { "server_gmt" : 1234171728, "server_seqid" : 28322813, "people" : [ { "screenname" : "Saturn2888", "location" : "Overland Park, Kansas, United States", "distance" : 8118, "distance_units" : "miles", "thumb" : "134x16/333x215/2/13750662203864942041.jpeg", "match" : 86, "friend" : 66, "enemy" : 6, "age" : 22, "gender" : "M", "orientation" : "S", "open_connection" : "1", "im_ok" : "1" } ], "events" : [ { "type" : "im", "from" : "Saturn2888", "server_gmt" : 1232701652, "server_seqid" : 9791021, "contents" : "test test" } , { "type" : "im", "to" : "Saturn2888", "server_gmt" : 1232701674, "server_seqid" : 9791217, "contents" : "chatty chatty" } , { "type" : "im", "from" : "Saturn2888", "server_gmt" : 1232701680, "server_seqid" : 9791280, "contents" : "nope" } , { "type" : "im", "to" : "Saturn2888", "server_gmt" : 1234171728, "server_seqid" : 28322813, "contents" : "hi?" } ] } */
-	/*  var response =  {"im_off" : 0, "events" : [{"server_gmt" : 1234171728, "server_seqid" : 28322813, "from" : "eionrobb", "contents" : "hi?", "type" : "im"}, {"server_gmt" : 1234172578, "server_seqid" : 28328267, "to" : "eionrobb", "contents" : "worked", "type" : "im"}, {"server_gmt" : 1242216197, "server_seqid" : 23732214, "from" : "eionrobb", "contents" : "test", "type" : "im"}], "num_unread" : 0, "server_gmt" : 1242216215, "people" : [{"thumb" : "0x0/0x0/2/15281378330166548237.jpeg", "open_connection" : 1, "gender" : "M", "age" : 25, "match" : 85, "screenname" : "eionrobb", "location" : "Christchurch, New Zealand", "im_ok" : 1, "orientation" : "S", "friend" : 66, "enemy" : 7, "distance" : 8118}], "server_seqid" : 23732214}
-	                    parent.InstantEvents.openConnection_cb(response, ""); */
-	/* {"im_off" : 0, "events" : [{"server_gmt" : 1242541572, "server_seqid" : 30129765, "from" : "Saturn2888", "contents" : "I'm getting double messages", "type" : "im"}], "server_seqid" : 30129765, "people" : [{"thumb" : "134x16/333x215/2/13750662203864942041.jpeg", "open_connection" : 1, "gender" : "M", "age" : 22, "match" : 85, "screenname" : "Saturn2888", "location" : "Overland Park, Kansas", "im_ok" : 1, "orientation" : "S", "friend" : 66, "enemy" : 7, "distance" : 8118}], "online_buddies" : [{"im_ok" : 1, "screenname" : "Saturn2888", "is_online" : 1, "userid" : 16335530578074790482}], "server_gmt" : 1242541572, "num_unread" : 2} */
-	
+
 	gchar *start_of_json = strchr(data, '{');
 	gchar *end_of_json = strrchr(data, '}');
 	
@@ -108,64 +104,71 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 	
 	JsonArray *events = NULL;
 	JsonArray *people = NULL;
-	JsonArray *online_buddies = NULL;
 	int unread_message_count = 0;
 	
-	if(json_object_has_member(objnode, "events"))
-		events = json_node_get_array(json_object_get_member(objnode, "events"));
 	if(json_object_has_member(objnode, "people"))
 		people = json_node_get_array(json_object_get_member(objnode, "people"));
+	if(json_object_has_member(objnode, "events"))
+		events = json_node_get_array(json_object_get_member(objnode, "events"));
 	if(json_object_has_member(objnode, "num_unread"))
 		unread_message_count = json_node_get_int(json_object_get_member(objnode, "num_unread"));
-	if(json_object_has_member(objnode, "online_buddies"))
-		online_buddies = json_node_get_array(json_object_get_member(objnode, "online_buddies"));
 	
-	//Look through online_buddies first to add them to our buddy list (if necessary)
-	if (online_buddies != NULL)
+	// Look through the buddy list for people to add first
+	if (people != NULL)
 	{
-		GList *online_buddies_list = json_array_get_elements(online_buddies);
+		GList *people_list = json_array_get_elements(people);
 		GList *current;
-		for (current = online_buddies_list; current; current = g_list_next(current))
+		for (current = people_list; current; current = g_list_next(current))
 		{
 			JsonNode *currentNode = current->data;
-			JsonObject *buddy = json_node_get_object(currentNode);
+			JsonObject *person = json_node_get_object(currentNode);
 			
-			//"online_buddies" : [{"im_ok" : 1, "screenname" : "Saturn2888", "is_online" : 1, "userid" : 16335530578074790482}]
-			const gchar *buddy_name = json_node_get_string(json_object_get_member(buddy, "screenname"));
-			gint is_online = json_node_get_int(json_object_get_member(buddy, "is_online"));
+			const gchar *buddy_name = json_node_get_string(json_object_get_member(person, "screenname"));
+			const gchar *buddy_icon = json_node_get_string(json_object_get_member(person, "thumbnail"));
+			gint is_online = json_node_get_int(json_object_get_member(person, "is_online"));
+			
 			PurpleBuddy *pbuddy = purple_find_buddy(oca->account, buddy_name);
-			
 			if (!pbuddy)
 			{
+				//Not everyone we talk to will be on our buddylist
 				pbuddy = purple_buddy_new(oca->account, buddy_name, NULL);
 				purple_blist_add_buddy(pbuddy, NULL, NULL, NULL);
-			} else {
-				purple_blist_node_set_flags(&(pbuddy->node), 0);
 			}
-			OkCupidBuddy *obuddy = pbuddy->proto_data;
-			if (obuddy == NULL)
-			{				
-				obuddy = g_new0(OkCupidBuddy, 1);
-				obuddy->buddy = pbuddy;
-				obuddy->oca = oca;
-				
-				// load the old buddy icon url from the icon 'checksum'
-				buddy_icon_url = (char *)purple_buddy_icons_get_checksum_for_user(pbuddy);
-				if (buddy_icon_url != NULL)
-					obuddy->thumb_url = g_strdup(buddy_icon_url);
-				
-				pbuddy->proto_data = obuddy;				
-			}
-			
-			if (is_online && !PURPLE_BUDDY_IS_ONLINE(pbuddy))
+			if (pbuddy != NULL)
 			{
-				purple_prpl_got_user_status(oca->account, buddy_name, purple_primitive_get_id_from_type(PURPLE_STATUS_AVAILABLE), NULL);
-			} else if (!is_online && PURPLE_BUDDY_IS_ONLINE(pbuddy))
-			{
-				purple_prpl_got_user_status(oca->account, buddy_name, purple_primitive_get_id_from_type(PURPLE_STATUS_OFFLINE), NULL);
+				if (is_online && !PURPLE_BUDDY_IS_ONLINE(pbuddy))
+				{
+					purple_prpl_got_user_status(oca->account, buddy_name, purple_primitive_get_id_from_type(PURPLE_STATUS_AVAILABLE), NULL);
+				} else if (!is_online && PURPLE_BUDDY_IS_ONLINE(pbuddy))
+				{
+					purple_prpl_got_user_status(oca->account, buddy_name, purple_primitive_get_id_from_type(PURPLE_STATUS_OFFLINE), NULL);
+				}
+				OkCupidBuddy *obuddy = pbuddy->proto_data;
+				if (obuddy == NULL)
+				{
+					gchar *buddy_icon_url;
+					
+					obuddy = g_new0(OkCupidBuddy, 1);
+					obuddy->buddy = pbuddy;
+					obuddy->oca = oca;
+					
+					// load the old buddy icon url from the icon 'checksum'
+					buddy_icon_url = (char *)purple_buddy_icons_get_checksum_for_user(pbuddy);
+					if (buddy_icon_url != NULL)
+						obuddy->thumb_url = g_strdup(buddy_icon_url);
+					
+					pbuddy->proto_data = obuddy;				
+				}			
+				if (!obuddy->thumb_url || !g_str_equal(obuddy->thumb_url, buddy_icon))
+				{
+					g_free(obuddy->thumb_url);
+					obuddy->thumb_url = g_strdup(buddy_icon);
+					
+					okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon, NULL, okc_buddy_icon_cb, g_strdup(buddy_name), FALSE);
+				}
 			}
 		}
-		g_list_free(online_buddies_list);
+		g_list_free(people_list);
 	}
 	
 	//loop through events looking for messages
@@ -236,58 +239,6 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 		g_list_free(event_list);
 	}
 	
-	if (people != NULL)
-	{
-		GList *people_list = json_array_get_elements(people);
-		GList *current;
-		for (current = people_list; current; current = g_list_next(current))
-		{
-			JsonNode *currentNode = current->data;
-			JsonObject *person = json_node_get_object(currentNode);
-			
-			const gchar *buddy_name = json_node_get_string(json_object_get_member(person, "screenname"));
-			const gchar *buddy_icon = json_node_get_string(json_object_get_member(person, "thumb"));
-			
-			PurpleBuddy *pbuddy = purple_find_buddy(oca->account, buddy_name);
-			if (!pbuddy)
-			{
-				//Not everyone we talk to will be on our buddylist
-				pbuddy = purple_buddy_new(oca->account, buddy_name, NULL);
-				purple_blist_add_buddy(pbuddy, NULL, NULL, NULL);
-				purple_blist_node_set_flags(&(pbuddy->node), PURPLE_BLIST_NODE_FLAG_NO_SAVE);
-			}
-			if (pbuddy != NULL)
-			{
-				OkCupidBuddy *obuddy = pbuddy->proto_data;
-				if (obuddy == NULL)
-				{
-					gchar *buddy_icon_url;
-					
-					obuddy = g_new0(OkCupidBuddy, 1);
-					obuddy->buddy = pbuddy;
-					obuddy->oca = oca;
-					
-					// load the old buddy icon url from the icon 'checksum'
-					buddy_icon_url = (char *)purple_buddy_icons_get_checksum_for_user(pbuddy);
-					if (buddy_icon_url != NULL)
-						obuddy->thumb_url = g_strdup(buddy_icon_url);
-					
-					pbuddy->proto_data = obuddy;				
-				}			
-				if (!obuddy->thumb_url || !g_str_equal(obuddy->thumb_url, buddy_icon))
-				{
-					g_free(obuddy->thumb_url);
-					obuddy->thumb_url = g_strdup(buddy_icon);
-					
-					gchar *buddy_icon_url = g_strdup_printf("/php/load_okc_image.php/images/%s", buddy_icon);
-					okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, okc_buddy_icon_cb, g_strdup(buddy_name), FALSE);
-					g_free(buddy_icon_url);
-				}
-			}
-		}
-		g_list_free(people_list);
-	}
-	
 	if (unread_message_count != oca->last_message_count)
 	{
 		oca->last_message_count = unread_message_count;
@@ -312,7 +263,10 @@ void okc_get_new_messages_now(OkCupidAccount *oca)
 	gchar *fetch_url;
 	purple_debug_info("okcupid", "getting new messages now\n");
 
-	fetch_url = g_strdup_printf("/instantevents?refresh_toolbar=1&show_online=1&num_unread=1&im_status=1");
+	fetch_url = g_strdup_printf("/instantevents?rand=0.%u&server_seqid=%u&server_gmt=%u&"
+					"load_thumbnails=1&buddylist=1&"
+					"show_offline=1&num_unread=1&im_status=1", 
+					g_random_int(), oca->server_seqid, oca->server_gmt);
 
 	okc_post_or_get(oca, OKC_METHOD_GET, NULL, fetch_url, NULL, got_new_messages, oca->pc, FALSE);
 
@@ -343,7 +297,10 @@ gboolean okc_get_new_messages(OkCupidAccount *oca)
 
 	purple_debug_info("okcupid", "getting new messages\n");
 
-	fetch_url = g_strdup_printf("/instantevents?rand=0.%u&server_seqid=%u&server_gmt=%u&show_online=1&num_unread=1&im_status=1", g_random_int(), oca->server_seqid, oca->server_gmt);
+	fetch_url = g_strdup_printf("/instantevents?rand=0.%u&server_seqid=%u&server_gmt=%u&"
+					"load_thumbnails=1&do_event_poll=1&buddylist=1&"
+					"show_offline=1&num_unread=1&im_status=1", 
+					g_random_int(), oca->server_seqid, oca->server_gmt);
 
 	okc_post_or_get(oca, OKC_METHOD_GET, NULL, fetch_url, NULL, got_new_messages, oca->pc, TRUE);
 	oca->last_messages_download_time = now;
@@ -441,12 +398,11 @@ gboolean okc_send_im_fom(OkCupidOutgoingMessage *msg)
 
 	encoded_message = g_strdup(purple_url_encode(msg->message));
 	encoded_recipient = g_strdup(purple_url_encode(msg->who));
-	postdata = g_strdup_printf("send=1&attempt=%d&rid=%d&recipient=%s&topic=false&body=%s&rand=0.%d",
+	postdata = g_strdup_printf("send=1&attempt=%d&rid=%d&recipient=%s&topic=false&body=%s",
 			msg->retry_count + 1,
 			msg->rid,
 			encoded_recipient,
-			encoded_message,
-			g_random_int());
+			encoded_message);
 	g_free(encoded_message);
 	g_free(encoded_recipient);
 
