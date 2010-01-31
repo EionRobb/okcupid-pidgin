@@ -45,31 +45,6 @@ void okc_blist_wink_buddy(PurpleBlistNode *node, gpointer data)
 	g_free(postdata);
 }
 
-static gchar *okc_fix_json(const gchar *data)
-{
-	gchar *output;
-	gchar *temp;
-
-#define okc_replace(a,b) (purple_strreplace(a, "\n " b " : ", "\n \"" b "\" : "))
-
-	temp = okc_replace(data, "screenname"); output = temp;
-	temp = okc_replace(output, "uid"); g_free(output); output = temp;
-	temp = okc_replace(output, "age"); g_free(output); output = temp;
-	temp = okc_replace(output, "gender"); g_free(output); output = temp;
-	temp = okc_replace(output, "sexpref"); g_free(output); output = temp;
-	temp = okc_replace(output, "thumb"); g_free(output); output = temp;
-	temp = okc_replace(output, "pics"); g_free(output); output = temp;
-	temp = okc_replace(output, "location"); g_free(output); output = temp;
-	temp = okc_replace(output, "relationshipstatus"); g_free(output); output = temp;
-	temp = okc_replace(output, "match"); g_free(output); output = temp;
-	temp = okc_replace(output, "enemy"); g_free(output); output = temp;
-	temp = okc_replace(output, "friend"); g_free(output); output = temp;
-	temp = okc_replace(output, "success"); g_free(output); output = temp;
-	temp = okc_replace(output, "lastipaddress"); g_free(output); output = temp;
-	
-	return output;
-}
-
 void okc_got_info(OkCupidAccount *oca, gchar *data,
 		gsize data_len, gpointer userdata)
 {
@@ -77,7 +52,7 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 	JsonParser *parser;
 	JsonNode *root;
 	PurpleNotifyUserInfo *user_info;
-	gchar *value_tmp, *fixeddata;
+	gchar *value_tmp;
 	GError *error = NULL;
 	JsonObject *info;
 	
@@ -86,16 +61,6 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 		g_free(username);
 		return;
 	}
-	
-	/*{ screenname : "Saturn2888", uid : "16335530578074790482", age : "22", gender : "M", sexpref : "Straight", 
-	thumb : "134x16/333x215/2/13750662203864942041.jpeg", 
-	pics : [ "http://cdn.okcimg.com/php/load_okc_image.php/images/134x16/333x215/2/13750662203864942041.jpeg" , 
-	"http://cdn.okcimg.com/php/load_okc_image.php/images/133x170/393x430/2/15211878639154382289.jpeg" , 
-	"http://cdn.okcimg.com/php/load_okc_image.php/images/35x25/185x175/2/13821158136993628299.jpeg" , 
-	"http://cdn.okcimg.com/php/load_okc_image.php/images/53x86/263x296/2/1445788482889546403.jpeg" , 
-	"http://cdn.okcimg.com/php/load_okc_image.php/images/91x0/388x297/2/6083536188236847527.jpeg" ], 
-	location : "Overland Park, Kansas", relationshipstatus : "SINGLE", match : "84", enemy : "7", 
-	friend : "66", success : "true", lastipaddress : "" } */
 	
 	purple_debug_info("okcupid", "okc_got_info: %s\n", data);
 	
@@ -110,35 +75,33 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 	parser = json_parser_new();
 	if(!json_parser_load_from_data(parser, data, data_len, &error))
 	{
-		//There was an error.  Try 'fixing' the data then loading it again
-		fixeddata = okc_fix_json(data);
-		if (!json_parser_load_from_data(parser, fixeddata, -1, &error))
-		{
-			g_free(fixeddata);
-			purple_debug_error("okcupid", "got_info error: %s\n", error->message);
-			g_error_free(error);
-			g_free(username);
-			
-			purple_notify_userinfo(oca->pc, username, user_info, NULL, NULL);
-			purple_notify_user_info_destroy(user_info);
-			
-			return;	
-		}
-		g_free(fixeddata);
+		purple_debug_error("okcupid", "got_info error: %s\n", error->message);
+		purple_notify_userinfo(oca->pc, username, user_info, NULL, NULL);
+		purple_notify_user_info_destroy(user_info);
+		g_free(username);
+		return;	
 	}
 	root = json_parser_get_root(parser);
 	info = json_node_get_object(root);
 	
-	purple_notify_user_info_add_pair(user_info, _("Age"), json_node_get_string(json_object_get_member(info, "age")));
-	purple_notify_user_info_add_pair(user_info, _("Gender"), json_node_get_string(json_object_get_member(info, "gender")));
-	purple_notify_user_info_add_pair(user_info, _("Sexual Preference"), json_node_get_string(json_object_get_member(info, "sexpref")));
-	purple_notify_user_info_add_pair(user_info, _("Relationship Status"), json_node_get_string(json_object_get_member(info, "relationshipstatus")));
+	value_tmp = g_strdup_printf("%" G_GINT64_FORMAT " years", json_node_get_int(json_object_get_member(info, "age")));
+	purple_notify_user_info_add_pair(user_info, _("Age"), value_tmp);
+	g_free(value_tmp);
+	purple_notify_user_info_add_pair(user_info, _("Gender"), json_node_get_string(json_object_get_member(info, "sex")));
+	purple_notify_user_info_add_pair(user_info, _("Sexual Preference"), json_node_get_string(json_object_get_member(info, "orientation")));
+	purple_notify_user_info_add_pair(user_info, _("Relationship Status"), json_node_get_string(json_object_get_member(info, "status")));
 	purple_notify_user_info_add_pair(user_info, _("Location"), json_node_get_string(json_object_get_member(info, "location")));
-	purple_notify_user_info_add_pair(user_info, _("Match"), json_node_get_string(json_object_get_member(info, "match")));
-	purple_notify_user_info_add_pair(user_info, _("Enemy"), json_node_get_string(json_object_get_member(info, "enemy")));
-	purple_notify_user_info_add_pair(user_info, _("Friend"), json_node_get_string(json_object_get_member(info, "friend")));
+	value_tmp = g_strdup_printf("%" G_GINT64_FORMAT "%%", json_node_get_int(json_object_get_member(info, "matchpercentage")));
+	purple_notify_user_info_add_pair(user_info, _("Match"), value_tmp);
+	g_free(value_tmp);
+	value_tmp = g_strdup_printf("%" G_GINT64_FORMAT "%%", json_node_get_int(json_object_get_member(info, "enemypercentage")));
+	purple_notify_user_info_add_pair(user_info, _("Enemy"), value_tmp);
+	g_free(value_tmp);
+	value_tmp = g_strdup_printf("%" G_GINT64_FORMAT "%%", json_node_get_int(json_object_get_member(info, "friendpercentage")));
+	purple_notify_user_info_add_pair(user_info, _("Friend"), value_tmp);
+	g_free(value_tmp);
 	
-	const gchar *buddy_icon = json_node_get_string(json_object_get_member(info, "thumb"));
+	const gchar *buddy_icon = json_node_get_string(json_object_get_member(info, "thumbnail"));
 	PurpleBuddy *buddy = purple_find_buddy(oca->account, username);
 	OkCupidBuddy *obuddy = buddy->proto_data;
 	if (obuddy == NULL)
@@ -164,6 +127,44 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 		okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon_url, NULL, okc_buddy_icon_cb, g_strdup(username), FALSE);
 		g_free(buddy_icon_url);
 	}
+
+	purple_notify_user_info_add_section_break(user_info);
+	purple_notify_user_info_add_section_header(user_info, _("The Skinny"));
+	
+	info = json_node_get_object(json_object_get_member(info, "skinny"));
+	purple_notify_user_info_add_pair(user_info, _("Last Online"), json_node_get_string(json_object_get_member(info, "last_online")));
+	purple_notify_user_info_add_pair(user_info, _("Join Date"), json_node_get_string(json_object_get_member(info, "join_date")));
+	purple_notify_user_info_add_pair(user_info, _("Ethnicity"), json_node_get_string(json_object_get_member(info, "ethnicities")));
+	purple_notify_user_info_add_pair(user_info, _("Height"), json_node_get_string(json_object_get_member(info, "height")));
+	purple_notify_user_info_add_pair(user_info, _("Body Type"), json_node_get_string(json_object_get_member(info, "bodytype")));
+	purple_notify_user_info_add_pair(user_info, _("Looking For"), json_node_get_string(json_object_get_member(info, "lookingfor")));
+	purple_notify_user_info_add_pair(user_info, _("Smokes"), json_node_get_string(json_object_get_member(info, "smoker")));
+	purple_notify_user_info_add_pair(user_info, _("Drinks"), json_node_get_string(json_object_get_member(info, "drinker")));
+	purple_notify_user_info_add_pair(user_info, _("Drugs"), json_node_get_string(json_object_get_member(info, "drugs")));
+	if (json_object_has_member(info, "religion"))
+	{
+		value_tmp = g_strdup_printf("%s %s", json_node_get_string(json_object_get_member(info, "religion")),
+							json_node_get_string(json_object_get_member(info, "religionserious")));
+		purple_notify_user_info_add_pair(user_info, _("Religion"), value_tmp);
+		g_free(value_tmp);
+	}
+	value_tmp = g_strdup_printf("%s %s", json_node_get_string(json_object_get_member(info, "sign")),
+						json_node_get_string(json_object_get_member(info, "sign_status")));
+	purple_notify_user_info_add_pair(user_info, _("Star sign"), value_tmp);
+	g_free(value_tmp);
+	value_tmp = g_strdup_printf("%s %s", json_node_get_string(json_object_get_member(info, "education_status")),
+						json_node_get_string(json_object_get_member(info, "education")));
+	purple_notify_user_info_add_pair(user_info, _("Education"), value_tmp);
+	g_free(value_tmp);
+	purple_notify_user_info_add_pair(user_info, _("Job"), json_node_get_string(json_object_get_member(info, "job")));
+	purple_notify_user_info_add_pair(user_info, _("Income"), json_node_get_string(json_object_get_member(info, "income")));
+	purple_notify_user_info_add_pair(user_info, _("Kids"), json_node_get_string(json_object_get_member(info, "children")));
+	value_tmp = g_strdup_printf("%s and %s", json_node_get_string(json_object_get_member(info, "dogs")),
+						json_node_get_string(json_object_get_member(info, "cats")));
+	purple_notify_user_info_add_pair(user_info, _("Pets"), value_tmp);
+	g_free(value_tmp);
+	purple_notify_user_info_add_pair(user_info, _("Languages"), json_node_get_string(json_object_get_member(info, "languagestr")));
+	
 	
 	purple_notify_userinfo(oca->pc, username, user_info, NULL, NULL);
 	purple_notify_user_info_destroy(user_info);
@@ -176,7 +177,7 @@ void okc_get_info(PurpleConnection *pc, const gchar *uid)
 {
 	gchar *profile_url;
 
-	profile_url = g_strdup_printf("/rjs/userinfo?u=%s&template=userinfo%%2Fajax.html", purple_url_encode(uid));
+	profile_url = g_strdup_printf("/profile/%s?json=2", purple_url_encode(uid));
 
 	okc_post_or_get(pc->proto_data, OKC_METHOD_GET, NULL, profile_url, NULL, okc_got_info, g_strdup(uid), FALSE);
 

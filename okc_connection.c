@@ -459,8 +459,6 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 	gchar *proxy_auth;
 	gchar *proxy_auth_base64;
 
-	purple_debug_info("okcupid", "post_or_get\n");
-
 	/* TODO: Fix keepalive and use it as much as possible */
 	keepalive = FALSE;
 
@@ -530,8 +528,7 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 	g_string_append_printf(request, "Accept-Language: %s\r\n", language_names);
 	g_free(language_names);
 
-	purple_debug_misc("okcupid", "sending request headers:\n%s\n",
-			request->str);
+	purple_debug_misc("okcupid", "requesting url %s\n", url);
 
 	g_string_append_printf(request, "\r\n");
 	if (method & OKC_METHOD_POST)
