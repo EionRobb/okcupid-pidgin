@@ -362,9 +362,9 @@ void okc_send_im_cb(OkCupidAccount *oca, gchar *data, gsize data_len, gpointer u
 	JsonObject *response;
 	response = json_node_get_object(root);
 	
-	gint message_sent = json_node_get_int(json_object_get_member(response, "message_sent"));
+	gint message_sent = json_node_get_int(json_object_get_member(response, "status"));
 	
-	if (message_sent)
+	if (message_sent < 100)
 	{
 		//Save the message we sent
 		purple_debug_info("okcupid", "putting message into hashtable: '%s'\n", msg->message);
@@ -374,19 +374,22 @@ void okc_send_im_cb(OkCupidAccount *oca, gchar *data, gsize data_len, gpointer u
 		return;
 	}
 	
-	const gchar *reason = json_node_get_string(json_object_get_member(response, "reason"));
-	if (g_str_equal(reason, "recip_not_online"))
+	const gchar *reason = json_node_get_string(json_object_get_member(response, "status_str"));
+	if (reason != NULL)
 	{
-		serv_got_im(oca->pc, msg->who, _("Recipient not online"), PURPLE_MESSAGE_ERROR, time(NULL));
-	} else if (g_str_equal(reason, "im_self"))
-	{
-		serv_got_im(oca->pc, msg->who, _("You cannot send an IM to yourself"), PURPLE_MESSAGE_ERROR, time(NULL));
-	} else if (g_str_equal(reason, "im_not_ok"))
-	{
-		serv_got_im(oca->pc, msg->who, _("Recipient is 'missing'"), PURPLE_MESSAGE_ERROR, time(NULL));
-	} else if (g_str_equal(reason, "recip_im_off"))
-	{
-		serv_got_im(oca->pc, msg->who, _("Recipient turned IM off"), PURPLE_MESSAGE_ERROR, time(NULL));		
+		if (g_str_equal(reason, "recip_not_online"))
+		{
+			serv_got_im(oca->pc, msg->who, _("Recipient not online"), PURPLE_MESSAGE_ERROR, time(NULL));
+		} else if (g_str_equal(reason, "im_self"))
+		{
+			serv_got_im(oca->pc, msg->who, _("You cannot send an IM to yourself"), PURPLE_MESSAGE_ERROR, time(NULL));
+		} else if (g_str_equal(reason, "im_not_ok"))
+		{
+			serv_got_im(oca->pc, msg->who, _("Recipient is 'missing'"), PURPLE_MESSAGE_ERROR, time(NULL));
+		} else if (g_str_equal(reason, "recip_im_off"))
+		{
+			serv_got_im(oca->pc, msg->who, _("Recipient turned IM off"), PURPLE_MESSAGE_ERROR, time(NULL));		
+		}
 	}
 	
 	okc_msg_destroy(msg);
