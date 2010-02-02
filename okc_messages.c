@@ -66,7 +66,6 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 		gsize data_len, gpointer userdata)
 {
 	PurpleConnection *pc = userdata;
-	gchar *buddy_icon_url;
 
 	/* NULL data will crash on Windows */
 	if (data == NULL)
@@ -237,6 +236,12 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 				{
 					purple_prpl_got_user_status(oca->account, buddy_name, purple_primitive_get_id_from_type(PURPLE_STATUS_OFFLINE), NULL);
 				}
+			} else if (g_str_equal(event_type, "stalk"))
+			{
+				//someone looked at the profile page (ie 'stalked' the user)
+				const gchar *buddy_name = json_node_get_string(json_object_get_member(event, "from"));
+				PurpleBuddy *pbuddy = purple_find_buddy(oca->account, buddy_name);
+				purple_blist_node_set_flags(&(pbuddy->node), PURPLE_BLIST_NODE_FLAG_NO_SAVE);
 			}
 		}
 		g_list_free(event_list);
@@ -302,7 +307,8 @@ gboolean okc_get_new_messages(OkCupidAccount *oca)
 
 	fetch_url = g_strdup_printf("/instantevents?rand=0.%u&server_seqid=%u&server_gmt=%u&"
 					"load_thumbnails=1&do_event_poll=1&buddylist=1&"
-					"show_offline=1&num_unread=1&im_status=1", 
+					"show_offline=1&num_unread=1&im_status=1&"
+					"do_post_read=1", 
 					g_random_int(), oca->server_seqid, oca->server_gmt);
 
 	okc_post_or_get(oca, OKC_METHOD_GET, NULL, fetch_url, NULL, got_new_messages, oca->pc, TRUE);
