@@ -308,9 +308,11 @@ static void plugin_init(PurplePlugin *plugin)
 	PurplePluginInfo *info = plugin->info;
 	PurplePluginProtocolInfo *prpl_info = info->extra_info;
 	
-	option = purple_account_option_bool_new("Show messages sent from website", "show_sent_messages", FALSE);
+	option = purple_account_option_string_new("Host", "host", "api.okcupid.com");
 	prpl_info->protocol_options = g_list_append(prpl_info->protocol_options, option);
 	
+	option = purple_account_option_bool_new("Show messages sent from website", "show_sent_messages", FALSE);
+	prpl_info->protocol_options = g_list_append(prpl_info->protocol_options, option);
 }
 
 static PurplePluginProtocolInfo prpl_info = {
