@@ -124,10 +124,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			
 			const gchar *buddy_name = json_node_get_string(json_object_get_member(person, "screenname"));
 			const gchar *buddy_icon = json_node_get_string(json_object_get_member(person, "thumbnail"));
-			gint is_online = json_node_get_int(json_object_get_member(person, "is_online"));
-			// Possible API bug, if they're online, it wont show is_online:0
-			if (!json_object_has_member(person, "is_online"))
-				is_online = 1;
+			gint is_online = json_node_get_int(json_object_get_member(person, "im_ok"));
 			
 			PurpleBuddy *pbuddy = purple_find_buddy(oca->account, buddy_name);
 			if (!pbuddy)
