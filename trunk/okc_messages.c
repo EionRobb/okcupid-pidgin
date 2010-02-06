@@ -482,6 +482,9 @@ void okc_check_inbox_cb(OkCupidAccount *oca, gchar *data, gsize data_len, gpoint
 		{
 			JsonNode *currentNode = current->data;
 			JsonObject *message = json_node_get_object(currentNode);
+			gboolean is_new = json_node_get_boolean(json_object_get_member(message, "is_new"));
+			if (!is_new)
+				continue;
 			const gchar *subject = json_node_get_string(json_object_get_member(message, "subject"));
 			const gchar *from = json_node_get_string(json_object_get_member(message, "person"));
 			const gchar *to = oca->account->username;
