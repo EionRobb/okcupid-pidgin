@@ -35,6 +35,7 @@ struct _OkCupidOutgoingMessage {
 };
 
 gboolean okc_send_im_fom(OkCupidOutgoingMessage *msg);
+void okc_check_inbox_cb(OkCupidAccount *oca, gchar *data, gsize data_len, gpointer user_data);
 
 void okc_buddy_icon_cb(OkCupidAccount *oca, gchar *data, gsize data_len,
 		gpointer user_data)
@@ -251,6 +252,10 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 		gchar *url = g_strdup("http://www.okcupid.com/mailbox");
 		purple_notify_emails(pc, unread_message_count, FALSE, NULL, NULL, &(oca->account->username), &(url), NULL, NULL);
 		g_free(url);
+		if (unread_message_count > 0)
+		{
+			okc_post_or_get(oca, OKC_METHOD_GET, NULL, "/mailbox?folderid=1&low=1", NULL, okc_check_inbox_cb, NULL, FALSE);	
+		}
 	}
 	
 	if (json_object_has_member(objnode, "server_seqid"))
@@ -451,4 +456,42 @@ int okc_send_im(PurpleConnection *pc, const gchar *who, const gchar *message, Pu
 	}
 
 	return strlen(message);
+}
+
+void okc_check_inbox_cb(OkCupidAccount *oca, gchar *data, gsize data_len, gpointer user_data)
+{
+	JsonParser *parser;
+	JsonNode *root;
+	JsonObject *mailbox;
+	JsonArray *messages;
+	
+	parser = json_parser_new();
+	if(!json_parser_load_from_data(parser, data, data_len, NULL))
+	{
+		purple_debug_warning("okcupid", "Could not parse mailbox data\n");
+		return;	
+	}
+	root = json_parser_get_root(parser);
+	mailbox = json_node_get_object(root);
+	if (json_object_has_member(mailbox, "messages"))
+	{
+		messages = json_node_get_array(json_object_get_member(mailbox, "messages"));
+		GList *message_list = json_array_get_elements(messages);
+		GList *current;
+		for (current = message_list; current; current = g_list_next(current))
+		{
+			JsonNode *currentNode = current->data;
+			JsonObject *message = json_node_get_object(currentNode);
+			const gchar *subject = json_node_get_string(json_object_get_member(message, "subject"));
+			const gchar *from = json_node_get_string(json_object_get_member(message, "person"));
+			const gchar *to = oca->account->username;
+			const gchar *thread_id = json_node_get_string(json_object_get_member(message, "thread_id"));
+			gchar *url = g_strdup_printf("http://www.okcupid.com/messages?readmsg=true&threadid=%s&folder=1", thread_id);
+			purple_notify_email(oca->pc, subject, from, to, url, NULL, NULL);
+			g_free(url);
+		}
+		g_list_free(message_list);
+	}
+	
+	g_object_unref(parser);
 }
