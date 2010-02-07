@@ -122,7 +122,7 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 		g_free(obuddy->thumb_url);
 		obuddy->thumb_url = g_strdup(buddy_icon);
 		if (g_str_has_prefix(buddy_icon, "http://cdn.okcimg.com/"))
-			buddy_icon = &buddy_icon[22];
+			buddy_icon = &buddy_icon[21];
 		okc_post_or_get(oca, OKC_METHOD_GET, "cdn.okcimg.com", buddy_icon, NULL, okc_buddy_icon_cb, g_strdup(username), FALSE);
 	}
 
