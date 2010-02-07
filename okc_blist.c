@@ -94,11 +94,11 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 	value_tmp = g_strdup_printf("%" G_GINT64_FORMAT "%%", json_node_get_int(json_object_get_member(info, "matchpercentage")));
 	purple_notify_user_info_add_pair(user_info, _("Match"), value_tmp);
 	g_free(value_tmp);
-	value_tmp = g_strdup_printf("%" G_GINT64_FORMAT "%%", json_node_get_int(json_object_get_member(info, "enemypercentage")));
-	purple_notify_user_info_add_pair(user_info, _("Enemy"), value_tmp);
-	g_free(value_tmp);
 	value_tmp = g_strdup_printf("%" G_GINT64_FORMAT "%%", json_node_get_int(json_object_get_member(info, "friendpercentage")));
 	purple_notify_user_info_add_pair(user_info, _("Friend"), value_tmp);
+	g_free(value_tmp);
+	value_tmp = g_strdup_printf("%" G_GINT64_FORMAT "%%", json_node_get_int(json_object_get_member(info, "enemypercentage")));
+	purple_notify_user_info_add_pair(user_info, _("Enemy"), value_tmp);
 	g_free(value_tmp);
 	
 	const gchar *buddy_icon = json_node_get_string(json_object_get_member(info, "thumbnail"));
