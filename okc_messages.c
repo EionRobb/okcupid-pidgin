@@ -138,6 +138,12 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			}
 			if (pbuddy != NULL)
 			{
+				if (!json_node_get_int(json_object_get_member(person, "is_buddy")))
+				{
+					purple_blist_node_set_flags(&(pbuddy->node), PURPLE_BLIST_NODE_FLAG_NO_SAVE);
+				} else {
+					purple_blist_node_set_flags(&(pbuddy->node), 0);
+				}
 				if (is_online && !PURPLE_BUDDY_IS_ONLINE(pbuddy))
 				{
 					purple_prpl_got_user_status(oca->account, buddy_name, purple_primitive_get_id_from_type(PURPLE_STATUS_AVAILABLE), NULL);
@@ -242,7 +248,6 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 				//someone looked at the profile page (ie 'stalked' the user)
 				const gchar *buddy_name = json_node_get_string(json_object_get_member(event, "from"));
 				PurpleBuddy *pbuddy = purple_find_buddy(oca->account, buddy_name);
-				purple_blist_node_set_flags(&(pbuddy->node), PURPLE_BLIST_NODE_FLAG_NO_SAVE);
 			}
 		}
 		g_list_free(event_list);
@@ -467,6 +472,8 @@ void okc_check_inbox_cb(OkCupidAccount *oca, gchar *data, gsize data_len, gpoint
 	JsonObject *mailbox;
 	JsonArray *messages;
 	
+	purple_debug_misc("okcupid", "check_inbox_cb\n%s", (data?data:"(null)"));
+	
 	parser = json_parser_new();
 	if(!json_parser_load_from_data(parser, data, data_len, NULL))
 	{
@@ -484,9 +491,11 @@ void okc_check_inbox_cb(OkCupidAccount *oca, gchar *data, gsize data_len, gpoint
 		{
 			JsonNode *currentNode = current->data;
 			JsonObject *message = json_node_get_object(currentNode);
-			gboolean is_new = json_node_get_boolean(json_object_get_member(message, "is_new"));
+			gboolean is_new = (gboolean) json_node_get_int(json_object_get_member(message, "is_new"));
 			if (!is_new)
+			{
 				continue;
+			}
 			const gchar *subject = json_node_get_string(json_object_get_member(message, "subject"));
 			const gchar *from = json_node_get_string(json_object_get_member(message, "person"));
 			const gchar *to = oca->account->username;
