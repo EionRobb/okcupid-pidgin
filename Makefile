@@ -56,7 +56,7 @@ libfacebookarm.so:	${FACEBOOK_SOURCES}
 	${LINUX_ARM_COMPILER} ${LIBPURPLE_CFLAGS} -Wall ${GLIB_CFLAGS} -I. -g -O2 -pipe ${FACEBOOK_SOURCES} -o libfacebookarm.so -shared -fPIC -DPIC
 
 libokcupid64.so:	${FACEBOOK_SOURCES}
-	${LINUX64_COMPILER} ${LIBPURPLE_CFLAGS} -Wall ${GLIB_CFLAGS} -I. -g -m64 -O2 -pipe ${FACEBOOK_SOURCES} -o libokcupid64.so -shared -fPIC -DPIC -ljson-glib-1.0.amd64
+	${LINUX64_COMPILER} ${LIBPURPLE_CFLAGS} -Wall ${GLIB_CFLAGS} -I. -g -m64 -O2 -pipe ${FACEBOOK_SOURCES} -o libokcupid64.so -shared -fPIC -DPIC -ljson-glib-1.0
 
 libfacebookppc.so:	${FACEBOOK_SOURCES}
 	${LINUX_PPC_COMPILER} ${LIBPURPLE_CFLAGS} -Wall ${GLIB_CFLAGS} -I. -g -O2 -pipe ${FACEBOOK_SOURCES} -o libfacebookppc.so -shared -fPIC -DPIC
