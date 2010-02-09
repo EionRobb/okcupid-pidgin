@@ -195,28 +195,8 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			if (g_str_equal(event_type, "im"))
 			{
 				//instant message
-				gchar *message = json_node_dup_string(json_object_get_member(event, "contents"));
-				
-				//sometimes the message can be embedded within a JSON object :(
-				JsonParser *message_parser = json_parser_new();
-				if(json_parser_load_from_data(message_parser, message, -1, NULL))
-				{
-					//yep, its JSON :( -- this is ripe for injections :(
-					//{ "text" : "how good are you at bowling?  " , "topic" : false }
-					JsonNode *message_root = json_parser_get_root(message_parser);
-					JsonObject *message_object = json_node_get_object(message_root);
-					if (json_object_has_member(message_object, "text"))
-					{
-						g_free(message);
-						message = json_node_dup_string(json_object_get_member(message_object, "text"));
-					}
-					g_object_unref(message_parser);
-				}
-				
-				gchar *message_stripped = purple_markup_strip_html(message);
-				purple_debug_info("okcupid", "checking message in hashtable: '%s'\n", message_stripped);
-				g_free(message);
-				gchar *message_html = okc_strdup_withhtml(message_stripped);
+				const gchar *message = json_node_get_string(json_object_get_member(event, "contents"));
+				gchar *message_html = okc_strdup_withhtml(message);
 				
 				const gchar *who = NULL;
 				PurpleMessageFlags flags;
@@ -231,7 +211,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 				}
 				if (who && (flags != PURPLE_MESSAGE_SEND || purple_account_get_bool(oca->account, "show_sent_messages", FALSE)))
 					serv_got_im (pc, who, message_html, flags, time(NULL));
-				g_free(message_stripped);
+
 				g_free(message_html);
 			} else if (g_str_equal(event_type, "orbit_user_signoff"))
 			{
