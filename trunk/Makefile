@@ -78,9 +78,9 @@ libfacebookbsd60.so:	${FACEBOOK_SOURCES}
 	${FREEBSD60_COMPILER} ${LIBPURPLE_CFLAGS} -Wall ${GLIB_CFLAGS} -I. -g -O2 -pipe ${FACEBOOK_SOURCES} -o libfacebook.so -shared -fPIC -DPIC
 
 
-pidgin-facebookchat.exe:	libfacebook.dll
+okcupid-pidgin.exe:	libokcupid.dll
 	echo "Dont forget to update version number"
-	makensis facebook.nsi > /dev/null
+	makensis okcupid.nsi > /dev/null
 	
 pidgin-facebookchat.deb:	libfacebook.so libfacebookarm.so libfacebook64.so libfacebookppc.so
 	echo "Dont forget to update version number"
