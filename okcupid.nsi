@@ -61,7 +61,7 @@ Section "MainSection" SEC01
     SetOverwrite try
 	copy:
 		ClearErrors
-		Delete "$PidginDir\plugins\libokcupid.dll"
+		Delete "$PidginDir\plugins\libokcupid*.dll"
 		IfErrors dllbusy
 		SetOutPath "$PidginDir\plugins"
 	    	File "libokcupid.dll"
