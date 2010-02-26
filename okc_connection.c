@@ -225,11 +225,13 @@ static void okc_fatal_connection_cb(OkCupidConnection *okconn)
 static void okc_post_or_get_readdata_cb(gpointer data, gint source,
 		PurpleInputCondition cond)
 {
+	OkCupidAccount *oca;
 	OkCupidConnection *okconn;
 	gchar buf[4096];
 	ssize_t len;
 
 	okconn = data;
+	oca = okconn->oca;
 
 	if (okconn->method & OKC_METHOD_SSL) {
 		len = purple_ssl_read(okconn->ssl_conn,
@@ -290,7 +292,7 @@ static void okc_post_or_get_readdata_cb(gpointer data, gint source,
 
 	okc_connection_destroy(okconn);
 
-	okc_next_connection(okconn->oca);
+	okc_next_connection(oca);
 }
 
 static void okc_post_or_get_ssl_readdata_cb (gpointer data,
@@ -608,7 +610,9 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 static void okc_next_connection(OkCupidAccount *oca)
 {
 	OkCupidConnection *okconn;
-	
+
+	g_return_if_fail(oca != NULL);	
+
 	if (!g_queue_is_empty(oca->waiting_conns))
 	{
 		if(g_slist_length(oca->conns) < OKC_MAX_CONNECTIONS)
