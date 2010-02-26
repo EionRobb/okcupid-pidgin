@@ -21,6 +21,7 @@
 #include "okc_connection.h"
 
 static void okc_attempt_connection(OkCupidConnection *);
+static void okc_next_connection(OkCupidAccount *oca);
 
 static gchar *okc_gunzip(const guchar *gzip_data, ssize_t *len_ptr)
 {
@@ -288,6 +289,8 @@ static void okc_post_or_get_readdata_cb(gpointer data, gint source,
 	okc_connection_process_data(okconn);
 
 	okc_connection_destroy(okconn);
+
+	okc_next_connection(okconn->oca);
 }
 
 static void okc_post_or_get_ssl_readdata_cb (gpointer data,
@@ -597,14 +600,30 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 	okconn->fd = -1;
 	okconn->connection_keepalive = keepalive;
 	okconn->request_time = time(NULL);
-	oca->conns = g_slist_prepend(oca->conns, okconn);
 
-	okc_attempt_connection(okconn);
+	g_queue_push_head(oca->waiting_conns, okconn);
+	okc_next_connection(oca);
+}
+
+static void okc_next_connection(OkCupidAccount *oca)
+{
+	OkCupidConnection *okconn;
+	
+	if (!g_queue_is_empty(oca->waiting_conns))
+	{
+		if(g_slist_length(oca->conns) < OKC_MAX_CONNECTIONS)
+		{
+			okconn = g_queue_pop_tail(oca->waiting_conns);
+			okc_attempt_connection(okconn);
+		}
+	}
 }
 
 static void okc_attempt_connection(OkCupidConnection *okconn)
 {
 	OkCupidAccount *oca = okconn->oca;
+
+	oca->conns = g_slist_prepend(oca->conns, okconn);
 
 	if (okconn->method & OKC_METHOD_SSL) {
 		okconn->ssl_conn = purple_ssl_connect(oca->account, okconn->hostname,

@@ -213,6 +213,7 @@ static void okc_login(PurpleAccount *account)
 			g_free, g_free);
 	oca->hostname_ip_cache = g_hash_table_new_full(g_str_hash, g_str_equal,
 			g_free, g_free);
+	oca->waiting_conns = g_queue_new();
 
 	account->gc->proto_data = oca;
 
@@ -251,6 +252,13 @@ static void okc_close(PurpleConnection *pc)
 		purple_timeout_remove(oca->buddy_presence_timer);
 	if (oca->perpetual_messages_timer)
 		purple_timeout_remove(oca->perpetual_messages_timer);
+
+	purple_debug_info("okcupid", "destroying %d waiting connections\n",
+			g_queue_get_length(oca->waiting_conns));
+
+	while (!g_queue_is_empty(oca->waiting_conns))
+		okc_connection_destroy(g_queue_pop_tail(oca->waiting_conns));
+	g_queue_free(oca->waiting_conns);
 
 	purple_debug_info("okcupid", "destroying %d incomplete connections\n",
 			g_slist_length(oca->conns));

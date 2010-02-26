@@ -22,6 +22,7 @@
 #define LIBOKCUPID_H
 
 #define OKCUPID_PLUGIN_VERSION "1.0"
+#define OKC_MAX_CONNECTIONS 16
 
 #include <glib.h>
 
@@ -77,7 +78,8 @@ struct _OkCupidAccount {
 	PurpleAccount *account;
 	PurpleConnection *pc;
 	GHashTable *hostname_ip_cache;
-	GSList *conns; /**< A list of all active FacebookConnections */
+	GSList *conns; /**< A list of all active OkCupidConnections */
+	GQueue *waiting_conns; /**< A list of all OkCupidConnections waiting to process */
 	GSList *dns_queries;
 	GHashTable *cookie_table;
 	time_t last_messages_download_time;
