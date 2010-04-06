@@ -236,9 +236,6 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 	if (unread_message_count != oca->last_message_count)
 	{
 		oca->last_message_count = unread_message_count;
-		gchar *url = g_strdup("http://www.okcupid.com/mailbox");
-		purple_notify_emails(pc, unread_message_count, FALSE, NULL, NULL, &(oca->account->username), &(url), NULL, NULL);
-		g_free(url);
 		if (unread_message_count > 0)
 		{
 			okc_post_or_get(oca, OKC_METHOD_GET, NULL, "/mailbox?folderid=1&low=1", NULL, okc_check_inbox_cb, NULL, FALSE);	
