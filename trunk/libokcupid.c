@@ -321,6 +321,9 @@ static void plugin_init(PurplePlugin *plugin)
 	
 	option = purple_account_option_bool_new("Show messages sent from website", "show_sent_messages", FALSE);
 	prpl_info->protocol_options = g_list_append(prpl_info->protocol_options, option);
+
+	option = purple_account_option_bool_new("Show people who visit your profile", "show_stalkers", TRUE);
+	prpl_info->protocol_options = g_list_append(prpl_info->protocol_options, option);
 }
 
 static PurplePluginProtocolInfo prpl_info = {
