@@ -428,12 +428,6 @@ int okc_send_im(PurpleConnection *pc, const gchar *who, const gchar *message, Pu
 
 	/* convert html to plaintext, removing trailing spaces */
 	msg->message = purple_markup_strip_html(message);
-	if (strlen(msg->message) > 999)
-	{
-		g_free(msg->message);
-		g_free(msg);
-		return -E2BIG;
-	}
 	
 	msg->rid = g_random_int_range(0, 2000000000); /* just fits inside a 32bit int */
 	msg->who = g_strdup(who);
