@@ -124,7 +124,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			JsonObject *person = json_node_get_object(currentNode);
 			
 			if (!json_node_get_int(json_object_get_member(person, "is_buddy")) && 
-				!purple_account_get_bool("show_stalkers", TRUE))
+				!purple_account_get_bool(oca->account, "show_stalkers", TRUE))
 			{
 				continue;
 			}
@@ -229,7 +229,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 				{
 					purple_prpl_got_user_status(oca->account, buddy_name, purple_primitive_get_id_from_type(PURPLE_STATUS_OFFLINE), NULL);
 				}
-			} else if (g_str_equal(event_type, "stalk") && purple_account_get_bool("show_stalkers", TRUE))
+			} else if (g_str_equal(event_type, "stalk") && purple_account_get_bool(oca->account, "show_stalkers", TRUE))
 			{
 				//someone looked at the profile page (ie 'stalked' the user)
 				const gchar *buddy_name = json_node_get_string(json_object_get_member(event, "from"));
