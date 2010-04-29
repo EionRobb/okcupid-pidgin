@@ -6,7 +6,7 @@ SetCompress off
 ; todo: SetBrandingImage
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "OkCupid for Pidgin"
-!define PRODUCT_VERSION "2.02"
+!define PRODUCT_VERSION "2.03"
 !define PRODUCT_PUBLISHER "Eion Robb and Kevin Ghadyani"
 !define PRODUCT_WEB_SITE "http://okcupid-pidgin.googlecode.com/"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
