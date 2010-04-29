@@ -32,7 +32,8 @@ FACEBOOK_SOURCES = \
 #Standard stuff here
 .PHONY:	all clean install sourcepackage
 
-all:	libokcupid.so libokcupid.dll libokcupid64.so libokcupidarm.so libokcupidppc.so installers sourcepackage
+#all:	libokcupid.so libokcupid.dll libokcupid64.so libokcupidarm.so libokcupidppc.so installers sourcepackage
+all:	libokcupid.so libokcupid.dll libokcupid64.so installers sourcepackage
 
 install:
 	cp libokcupid.so /usr/lib/purple-2/

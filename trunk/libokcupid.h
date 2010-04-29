@@ -21,7 +21,7 @@
 #ifndef LIBOKCUPID_H
 #define LIBOKCUPID_H
 
-#define OKCUPID_PLUGIN_VERSION "2.02"
+#define OKCUPID_PLUGIN_VERSION "2.03"
 #define OKC_MAX_CONNECTIONS 16
 
 #include <glib.h>
