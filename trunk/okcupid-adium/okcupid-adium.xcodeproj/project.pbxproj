@@ -1,0 +1,383 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7A28E4DB1037DAFD005E130E /* libokcupid.c in Sources */ = {isa = PBXBuildFile; fileRef = 7A28E4D31037DAFD005E130E /* libokcupid.c */; };
+		7A28E4DC1037DAFD005E130E /* okc_blist.c in Sources */ = {isa = PBXBuildFile; fileRef = 7A28E4D51037DAFD005E130E /* okc_blist.c */; };
+		7A28E4DD1037DAFD005E130E /* okc_connection.c in Sources */ = {isa = PBXBuildFile; fileRef = 7A28E4D71037DAFD005E130E /* okc_connection.c */; };
+		7A28E4DE1037DAFD005E130E /* okc_messages.c in Sources */ = {isa = PBXBuildFile; fileRef = 7A28E4D91037DAFD005E130E /* okc_messages.c */; };
+		7A28E4E11037DB1A005E130E /* OkCupidPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A28E4E01037DB1A005E130E /* OkCupidPlugin.m */; };
+		7A6FCB141038156A00D8926C /* OkCupidService.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A6FCB131038156A00D8926C /* OkCupidService.m */; };
+		7A6FCC3E10381DCE00D8926C /* OkCupidAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A6FCC3D10381DCE00D8926C /* OkCupidAccountViewController.m */; };
+		7A6FCC4210381ECA00D8926C /* AdiumOkCupidAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A6FCC4110381ECA00D8926C /* AdiumOkCupidAccount.m */; };
+		7A6FCC72103D57FF00D8926C /* okcupid-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A6FCC6D103D57FF00D8926C /* okcupid-small.png */; };
+		7A6FCC74103D57FF00D8926C /* okcupid.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A6FCC71103D57FF00D8926C /* okcupid.png */; };
+		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		7A02F02810380AEF00319294 /* libjson-glib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "libjson-glib.framework"; path = "../../adium/Frameworks/libjson-glib.framework"; sourceTree = SOURCE_ROOT; };
+		7A28E4D31037DAFD005E130E /* libokcupid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = libokcupid.c; path = ../libokcupid.c; sourceTree = SOURCE_ROOT; };
+		7A28E4D41037DAFD005E130E /* libokcupid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libokcupid.h; path = ../libokcupid.h; sourceTree = SOURCE_ROOT; };
+		7A28E4D51037DAFD005E130E /* okc_blist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = okc_blist.c; path = ../okc_blist.c; sourceTree = SOURCE_ROOT; };
+		7A28E4D61037DAFD005E130E /* okc_blist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = okc_blist.h; path = ../okc_blist.h; sourceTree = SOURCE_ROOT; };
+		7A28E4D71037DAFD005E130E /* okc_connection.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = okc_connection.c; path = ../okc_connection.c; sourceTree = SOURCE_ROOT; };
+		7A28E4D81037DAFD005E130E /* okc_connection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = okc_connection.h; path = ../okc_connection.h; sourceTree = SOURCE_ROOT; };
+		7A28E4D91037DAFD005E130E /* okc_messages.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = okc_messages.c; path = ../okc_messages.c; sourceTree = SOURCE_ROOT; };
+		7A28E4DA1037DAFD005E130E /* okc_messages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = okc_messages.h; path = ../okc_messages.h; sourceTree = SOURCE_ROOT; };
+		7A28E4DF1037DB1A005E130E /* OkCupidPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OkCupidPlugin.h; sourceTree = "<group>"; };
+		7A28E4E01037DB1A005E130E /* OkCupidPlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OkCupidPlugin.m; sourceTree = "<group>"; };
+		7A28E6E61038074F005E130E /* Adium.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Adium.framework; path = ../../adium/build/Release/Adium.framework; sourceTree = SOURCE_ROOT; };
+		7A28E77010380805005E130E /* libglib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = libglib.framework; path = ../../adium/Frameworks/libglib.framework; sourceTree = SOURCE_ROOT; };
+		7A28E78A103809F5005E130E /* libpurple.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = libpurple.framework; path = ../../adium/Frameworks/libpurple.framework; sourceTree = SOURCE_ROOT; };
+		7A28E813103809FF005E130E /* libgobject.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = libgobject.framework; path = ../../adium/Frameworks/libgobject.framework; sourceTree = SOURCE_ROOT; };
+		7A28E81F10380A5D005E130E /* libintl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = libintl.framework; path = ../../adium/Frameworks/libintl.framework; sourceTree = SOURCE_ROOT; };
+		7A6FCB121038156A00D8926C /* OkCupidService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OkCupidService.h; sourceTree = "<group>"; };
+		7A6FCB131038156A00D8926C /* OkCupidService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OkCupidService.m; sourceTree = "<group>"; };
+		7A6FCBA8103817D200D8926C /* AdiumLibpurple.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdiumLibpurple.framework; path = ../../adium/build/Release/AdiumLibpurple.framework; sourceTree = SOURCE_ROOT; };
+		7A6FCC3C10381DCE00D8926C /* OkCupidAccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OkCupidAccountViewController.h; sourceTree = "<group>"; };
+		7A6FCC3D10381DCE00D8926C /* OkCupidAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OkCupidAccountViewController.m; sourceTree = "<group>"; };
+		7A6FCC4010381ECA00D8926C /* AdiumOkCupidAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdiumOkCupidAccount.h; sourceTree = "<group>"; };
+		7A6FCC4110381ECA00D8926C /* AdiumOkCupidAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdiumOkCupidAccount.m; sourceTree = "<group>"; };
+		7A6FCC6D103D57FF00D8926C /* okcupid-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "okcupid-small.png"; path = "icons/16/okcupid-small.png"; sourceTree = "<group>"; };
+		7A6FCC71103D57FF00D8926C /* okcupid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = okcupid.png; path = icons/48/okcupid.png; sourceTree = "<group>"; };
+		8D5B49B6048680CD000E48DA /* OkCupid.AdiumPlugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OkCupid.AdiumPlugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D5B49B3048680CD000E48DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		089C166AFE841209C02AAC07 /* okcupid-adium */ = {
+			isa = PBXGroup;
+			children = (
+				7A28E4D31037DAFD005E130E /* libokcupid.c */,
+				7A28E4D41037DAFD005E130E /* libokcupid.h */,
+				7A28E4D51037DAFD005E130E /* okc_blist.c */,
+				7A28E4D61037DAFD005E130E /* okc_blist.h */,
+				7A28E4D71037DAFD005E130E /* okc_connection.c */,
+				7A28E4D81037DAFD005E130E /* okc_connection.h */,
+				7A28E4D91037DAFD005E130E /* okc_messages.c */,
+				7A28E4DA1037DAFD005E130E /* okc_messages.h */,
+				089C167CFE841241C02AAC07 /* Resources */,
+				089C1671FE841209C02AAC07 /* Frameworks and Libraries */,
+				19C28FB8FE9D52D311CA2CBB /* Products */,
+				7A28E4DF1037DB1A005E130E /* OkCupidPlugin.h */,
+				7A28E4E01037DB1A005E130E /* OkCupidPlugin.m */,
+				7A6FCB121038156A00D8926C /* OkCupidService.h */,
+				7A6FCB131038156A00D8926C /* OkCupidService.m */,
+				7A6FCC3C10381DCE00D8926C /* OkCupidAccountViewController.h */,
+				7A6FCC3D10381DCE00D8926C /* OkCupidAccountViewController.m */,
+				7A6FCC4010381ECA00D8926C /* AdiumOkCupidAccount.h */,
+				7A6FCC4110381ECA00D8926C /* AdiumOkCupidAccount.m */,
+			);
+			name = "okcupid-adium";
+			sourceTree = "<group>";
+		};
+		089C1671FE841209C02AAC07 /* Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */,
+				1058C7AEFEA557BF11CA2CBB /* Other Frameworks */,
+			);
+			name = "Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C167CFE841241C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7A6FCC71103D57FF00D8926C /* okcupid.png */,
+				7A6FCC6D103D57FF00D8926C /* okcupid-small.png */,
+				8D5B49B7048680CD000E48DA /* Info.plist */,
+				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7A6FCBA8103817D200D8926C /* AdiumLibpurple.framework */,
+				7A02F02810380AEF00319294 /* libjson-glib.framework */,
+				7A28E81F10380A5D005E130E /* libintl.framework */,
+				7A28E813103809FF005E130E /* libgobject.framework */,
+				7A28E78A103809F5005E130E /* libpurple.framework */,
+				7A28E77010380805005E130E /* libglib.framework */,
+				7A28E6E61038074F005E130E /* Adium.framework */,
+				1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7AEFEA557BF11CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FB8FE9D52D311CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D5B49B6048680CD000E48DA /* OkCupid.AdiumPlugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D5B49AC048680CD000E48DA /* okcupid-adium */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "okcupid-adium" */;
+			buildPhases = (
+				8D5B49AF048680CD000E48DA /* Resources */,
+				8D5B49B1048680CD000E48DA /* Sources */,
+				8D5B49B3048680CD000E48DA /* Frameworks */,
+				7A04D9E610622325003A1D13 /* Fix libpurple lookups */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "okcupid-adium";
+			productInstallPath = "$(HOME)/Library/Bundles";
+			productName = "okcupid-adium";
+			productReference = 8D5B49B6048680CD000E48DA /* OkCupid.AdiumPlugin */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1669FE841209C02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "okcupid-adium" */;
+			compatibilityVersion = "Xcode 2.4";
+			hasScannedForEncodings = 1;
+			mainGroup = 089C166AFE841209C02AAC07 /* okcupid-adium */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8D5B49AC048680CD000E48DA /* okcupid-adium */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D5B49AF048680CD000E48DA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */,
+				7A6FCC72103D57FF00D8926C /* okcupid-small.png in Resources */,
+				7A6FCC74103D57FF00D8926C /* okcupid.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		7A04D9E610622325003A1D13 /* Fix libpurple lookups */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Fix libpurple lookups";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#Make this change for every new version of libpurple in Adium source\n/Developer/usr/bin/install_name_tool -change \"@executable_path/../Frameworks/libpurple.framework/Versions/0.6.0/libpurple\" \"@executable_path/../Frameworks/libpurple.framework/libpurple\" \"$TARGET_BUILD_DIR/$PRODUCT_NAME.$WRAPPER_EXTENSION/Contents/MacOS/$PRODUCT_NAME\"\n\n#this needs to be updated for every new version of glib in Adium\n/Developer/usr/bin/install_name_tool -change \"@executable_path/../Frameworks/libglib.framework/Versions/2.0.0/libglib\" \"@executable_path/../Frameworks/libglib.framework/libglib\" \"$TARGET_BUILD_DIR/$PRODUCT_NAME.$WRAPPER_EXTENSION/Contents/MacOS/$PRODUCT_NAME\"\n/Developer/usr/bin/install_name_tool -change \"@executable_path/../Frameworks/libgobject.framework/Versions/2.0.0/libgobject\" \"@executable_path/../Frameworks/libgobjects.framework/libgobject\" \"$TARGET_BUILD_DIR/$PRODUCT_NAME.$WRAPPER_EXTENSION/Contents/MacOS/$PRODUCT_NAME\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D5B49B1048680CD000E48DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7A28E4DB1037DAFD005E130E /* libokcupid.c in Sources */,
+				7A28E4DC1037DAFD005E130E /* okc_blist.c in Sources */,
+				7A28E4DD1037DAFD005E130E /* okc_connection.c in Sources */,
+				7A28E4DE1037DAFD005E130E /* okc_messages.c in Sources */,
+				7A28E4E11037DB1A005E130E /* OkCupidPlugin.m in Sources */,
+				7A6FCB141038156A00D8926C /* OkCupidService.m in Sources */,
+				7A6FCC3E10381DCE00D8926C /* OkCupidAccountViewController.m in Sources */,
+				7A6FCC4210381ECA00D8926C /* AdiumOkCupidAccount.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C167DFE841241C02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C167EFE841241C02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB913B08733D840010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					i386,
+					ppc,
+					x86_64,
+				);
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(HOME)/adium/Build/Release",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(HOME)/adium/build/Release\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../adium/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(HOME)/adium/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../adium/build/Release\"";
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "okcupid-adium_Prefix.pch";
+				GCC_THREADSAFE_STATICS = NO;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				HEADER_SEARCH_PATHS = (
+					"$(HOME)/adium/Frameworks/libpurple.framework/Headers",
+					"$(HOME)/adium/Frameworks/libglib.framework/Headers",
+					"$(HOME)/adium/Frameworks/libjson-glib.framework/Headers",
+					"$(HOME)/adium/build",
+					"$(HOME)/adium/Frameworks/libintl.framework/Headers",
+					"$(HOME)/adium/build/Release/AdiumLibpurple.framework/Headers",
+				);
+				HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(HOME)/adium/Frameworks/AIUtilities Framework/build\"";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "\"$(HOME)/Library/Application Support/Adium 2.0/PlugIns/\"";
+				LD_GENERATE_MAP_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = "-DPURPLE_STATIC_PRPL";
+				OTHER_LDFLAGS = (
+					"-undefined",
+					dynamic_lookup,
+					"-weak_framework",
+					libglib,
+					"-weak_framework",
+					libpurple,
+					"-weak_framework",
+					libgobject,
+					"-flat_namespace",
+				);
+				PRODUCT_NAME = OkCupid;
+				STRIP_STYLE = all;
+				VALID_ARCHS = "x86_64 i386 ppc";
+				WRAPPER_EXTENSION = AdiumPlugin;
+			};
+			name = Debug;
+		};
+		1DEB913C08733D840010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../adium/build/Release\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../adium/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SYSTEM_APPS_DIR)/Adium.app/Contents/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../adium/build/Release\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../adium/Frameworks\"";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "okcupid-adium_Prefix.pch";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				PRODUCT_NAME = "okcupid-adium";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		1DEB913F08733D840010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+			};
+			name = Debug;
+		};
+		1DEB914008733D840010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "okcupid-adium" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB913B08733D840010E9CD /* Debug */,
+				1DEB913C08733D840010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "okcupid-adium" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB913F08733D840010E9CD /* Debug */,
+				1DEB914008733D840010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
+}
