@@ -1,0 +1,639 @@
+// !$*UTF8*$!
+{
+	089C1669FE841209C02AAC07 /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		activeTarget = 8D5B49AC048680CD000E48DA /* okcupid-adium */;
+		addToTargets = (
+			8D5B49AC048680CD000E48DA /* okcupid-adium */,
+		);
+		codeSenseManager = 7A28E4C61037D97C005E130E /* Code sense */;
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXBookmarksDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXBookmarksDataSource_NameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					200,
+					200,
+					150.58349609375,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXBookmarksDataSource_LocationID,
+					PBXBookmarksDataSource_NameID,
+					PBXBookmarksDataSource_CommentsID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					394,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					220,
+					60,
+					20,
+					48,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 306590712;
+			PBXWorkspaceStateSaveDate = 306590712;
+		};
+		perUserProjectItems = {
+			7A02824B1246343E00601D8E /* PBXTextBookmark */ = 7A02824B1246343E00601D8E /* PBXTextBookmark */;
+			7A02824C1246343E00601D8E /* PBXTextBookmark */ = 7A02824C1246343E00601D8E /* PBXTextBookmark */;
+			7A02824D1246343E00601D8E /* PBXTextBookmark */ = 7A02824D1246343E00601D8E /* PBXTextBookmark */;
+			7A02F04D10380BCF00319294 /* PBXTextBookmark */ = 7A02F04D10380BCF00319294 /* PBXTextBookmark */;
+			7A02F23F103812D900319294 /* PBXTextBookmark */ = 7A02F23F103812D900319294 /* PBXTextBookmark */;
+			7A28E67F1037E028005E130E /* PBXTextBookmark */ = 7A28E67F1037E028005E130E /* PBXTextBookmark */;
+			7A3C9AB11153268900C35C57 /* PBXTextBookmark */ = 7A3C9AB11153268900C35C57 /* PBXTextBookmark */;
+			7A3C9AB31153268900C35C57 /* PBXTextBookmark */ = 7A3C9AB31153268900C35C57 /* PBXTextBookmark */;
+			7A3C9AB41153268900C35C57 /* PBXTextBookmark */ = 7A3C9AB41153268900C35C57 /* PBXTextBookmark */;
+			7A5994631085BB9300A68E5C /* PlistBookmark */ = 7A5994631085BB9300A68E5C /* PlistBookmark */;
+			7A5994641085BB9300A68E5C /* PBXTextBookmark */ = 7A5994641085BB9300A68E5C /* PBXTextBookmark */;
+			7A5994651085BB9300A68E5C /* PBXTextBookmark */ = 7A5994651085BB9300A68E5C /* PBXTextBookmark */;
+			7A5994671085BB9300A68E5C /* PBXTextBookmark */ = 7A5994671085BB9300A68E5C /* PBXTextBookmark */;
+			7A5994691085BB9300A68E5C /* PBXTextBookmark */ = 7A5994691085BB9300A68E5C /* PBXTextBookmark */;
+			7A59946B1085BB9300A68E5C /* PBXTextBookmark */ = 7A59946B1085BB9300A68E5C /* PBXTextBookmark */;
+			7A59946C1085BB9300A68E5C /* PBXTextBookmark */ = 7A59946C1085BB9300A68E5C /* PBXTextBookmark */;
+			7A59946E1085BB9300A68E5C /* PBXTextBookmark */ = 7A59946E1085BB9300A68E5C /* PBXTextBookmark */;
+			7A59946F1085BB9300A68E5C /* PBXTextBookmark */ = 7A59946F1085BB9300A68E5C /* PBXTextBookmark */;
+			7A5994701085BB9300A68E5C /* PBXTextBookmark */ = 7A5994701085BB9300A68E5C /* PBXTextBookmark */;
+			7A5994711085BB9300A68E5C /* PBXTextBookmark */ = 7A5994711085BB9300A68E5C /* PBXTextBookmark */;
+			7A6FCC5210381F8100D8926C /* PBXTextBookmark */ = 7A6FCC5210381F8100D8926C /* PBXTextBookmark */;
+			7A6FCC88103D5C9000D8926C /* PBXBookmark */ = 7A6FCC88103D5C9000D8926C /* PBXBookmark */;
+			7A6FCC89103D5C9000D8926C /* PBXBookmark */ = 7A6FCC89103D5C9000D8926C /* PBXBookmark */;
+			7A965D1111717B4A0081263B /* PBXTextBookmark */ = 7A965D1111717B4A0081263B /* PBXTextBookmark */;
+			7A965D1211717B4A0081263B /* PBXTextBookmark */ = 7A965D1211717B4A0081263B /* PBXTextBookmark */;
+			7ABA2BFC1057B66500E313CD /* PBXTextBookmark */ = 7ABA2BFC1057B66500E313CD /* PBXTextBookmark */;
+			7ABA2BFD1057B66500E313CD /* PBXTextBookmark */ = 7ABA2BFD1057B66500E313CD /* PBXTextBookmark */;
+			7AC6F272103D5DB300E4BFDB /* PBXTextBookmark */ = 7AC6F272103D5DB300E4BFDB /* PBXTextBookmark */;
+			7AC6F274103D5DB300E4BFDB /* PBXTextBookmark */ = 7AC6F274103D5DB300E4BFDB /* PBXTextBookmark */;
+			7AC750DB1122B5A100659758 /* PBXTextBookmark */ = 7AC750DB1122B5A100659758 /* PBXTextBookmark */;
+			7AC7510D1122B9DD00659758 /* PBXTextBookmark */ = 7AC7510D1122B9DD00659758 /* PBXTextBookmark */;
+			7AC7511F1122BA5C00659758 /* PBXTextBookmark */ = 7AC7511F1122BA5C00659758 /* PBXTextBookmark */;
+		};
+		sourceControlManager = 7A28E4C51037D97C005E130E /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	089C167EFE841241C02AAC07 /* English */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {438, 509}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 45}";
+		};
+	};
+	7A02824B1246343E00601D8E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A28E4D31037DAFD005E130E /* libokcupid.c */;
+		name = "libokcupid.c: 255";
+		rLen = 266;
+		rLoc = 7485;
+		rType = 0;
+		vrLen = 1011;
+		vrLoc = 2416;
+	};
+	7A02824C1246343E00601D8E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A6FCB131038156A00D8926C /* OkCupidService.m */;
+		name = "OkCupidService.m: 59";
+		rLen = 51;
+		rLoc = 950;
+		rType = 0;
+		vrLen = 815;
+		vrLoc = 951;
+	};
+	7A02824D1246343E00601D8E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A6FCC4110381ECA00D8926C /* AdiumOkCupidAccount.m */;
+		name = "AdiumOkCupidAccount.m: 21";
+		rLen = 0;
+		rLoc = 376;
+		rType = 0;
+		vrLen = 791;
+		vrLoc = 390;
+	};
+	7A02F04D10380BCF00319294 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A28E84E10380A9C005E130E /* gi18n.h */;
+		name = "gi18n.h: 23";
+		rLen = 21;
+		rLoc = 933;
+		rType = 0;
+		vrLen = 546;
+		vrLoc = 635;
+	};
+	7A02F235103812BC00319294 /* gutils.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = gutils.h;
+		path = /Users/mymacspace/adium/Frameworks/libglib.framework/Headers/glib/gutils.h;
+		sourceTree = "<absolute>";
+	};
+	7A02F23F103812D900319294 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A28E4D61037DAFD005E130E /* okc_blist.h */;
+		name = "okc_blist.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 701;
+		vrLoc = 621;
+	};
+	7A28E4C51037D97C005E130E /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
+		};
+	};
+	7A28E4C61037D97C005E130E /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	7A28E4D31037DAFD005E130E /* libokcupid.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {656, 5785}}";
+			sepNavSelRange = "{7485, 266}";
+			sepNavVisRange = "{2416, 1011}";
+		};
+	};
+	7A28E4D41037DAFD005E130E /* libokcupid.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {789, 1352}}";
+			sepNavSelRange = "{2153, 84}";
+			sepNavVisRange = "{1656, 1042}";
+		};
+	};
+	7A28E4D51037DAFD005E130E /* okc_blist.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {985, 3107}}";
+			sepNavSelRange = "{2224, 0}";
+			sepNavVisRange = "{618, 975}";
+		};
+	};
+	7A28E4D61037DAFD005E130E /* okc_blist.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {519, 490}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{621, 701}";
+		};
+	};
+	7A28E4D71037DAFD005E130E /* okc_connection.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {978, 8372}}";
+			sepNavSelRange = "{17459, 0}";
+			sepNavVisRange = "{93, 1259}";
+		};
+	};
+	7A28E4D91037DAFD005E130E /* okc_messages.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {999, 6422}}";
+			sepNavSelRange = "{7646, 0}";
+			sepNavVisRange = "{9147, 1105}";
+		};
+	};
+	7A28E4DA1037DAFD005E130E /* okc_messages.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {519, 476}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 767}";
+		};
+	};
+	7A28E4DF1037DB1A005E130E /* OkCupidPlugin.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {438, 514}}";
+			sepNavSelRange = "{66, 14}";
+			sepNavVisRange = "{0, 88}";
+		};
+	};
+	7A28E4E01037DB1A005E130E /* OkCupidPlugin.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {438, 514}}";
+			sepNavSelRange = "{214, 0}";
+			sepNavVisRange = "{0, 260}";
+		};
+	};
+	7A28E6461037DD6E005E130E /* okcupid-adium_Prefix.pch */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = "okcupid-adium_Prefix.pch";
+		path = "/Users/mymacspace/okcupid-pidgin/okcupid-adium/okcupid-adium_Prefix.pch";
+		sourceTree = "<absolute>";
+	};
+	7A28E67F1037E028005E130E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A28E6461037DD6E005E130E /* okcupid-adium_Prefix.pch */;
+		name = "okcupid-adium_Prefix.pch: 2";
+		rLen = 0;
+		rLoc = 1;
+		rType = 0;
+		vrLen = 49;
+		vrLoc = 0;
+	};
+	7A28E84E10380A9C005E130E /* gi18n.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = gi18n.h;
+		path = /Users/mymacspace/adium/Frameworks/libglib.framework/Headers/glib/gi18n.h;
+		sourceTree = "<absolute>";
+	};
+	7A3C9AB11153268900C35C57 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A6FCC06103819C600D8926C /* AIAdiumProtocol.h */;
+		name = "AIAdiumProtocol.h: 35";
+		rLen = 0;
+		rLoc = 1516;
+		rType = 0;
+		vrLen = 1756;
+		vrLoc = 0;
+	};
+	7A3C9AB31153268900C35C57 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A28E4D51037DAFD005E130E /* okc_blist.c */;
+		name = "okc_blist.c: 77";
+		rLen = 0;
+		rLoc = 2224;
+		rType = 0;
+		vrLen = 975;
+		vrLoc = 618;
+	};
+	7A3C9AB41153268900C35C57 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A28E4D91037DAFD005E130E /* okc_messages.c */;
+		name = "okc_messages.c: 230";
+		rLen = 0;
+		rLoc = 7646;
+		rType = 0;
+		vrLen = 1105;
+		vrLoc = 9147;
+	};
+	7A5994631085BB9300A68E5C /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = 8D5B49B7048680CD000E48DA /* Info.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+			CFBundleDevelopmentRegion,
+		);
+		name = "/Users/mymacspace/okcupid-pidgin/okcupid-adium/Info.plist";
+		rLen = 0;
+		rLoc = 2147483647;
+	};
+	7A5994641085BB9300A68E5C /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A28E4DF1037DB1A005E130E /* OkCupidPlugin.h */;
+		name = "OkCupidPlugin.h: 4";
+		rLen = 14;
+		rLoc = 66;
+		rType = 0;
+		vrLen = 88;
+		vrLoc = 0;
+	};
+	7A5994651085BB9300A68E5C /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A5994661085BB9300A68E5C /* NetnexusService.h */;
+		name = "NetnexusService.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 223;
+		vrLoc = 0;
+	};
+	7A5994661085BB9300A68E5C /* NetnexusService.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = NetnexusService.h;
+		path = "/Users/mymacspace/netnexus-pidgin/netnexus-adium/NetnexusService.h";
+		sourceTree = "<absolute>";
+	};
+	7A5994671085BB9300A68E5C /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A5994681085BB9300A68E5C /* NetnexusAccount.h */;
+		name = "NetnexusAccount.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 223;
+		vrLoc = 0;
+	};
+	7A5994681085BB9300A68E5C /* NetnexusAccount.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = NetnexusAccount.h;
+		path = "/Users/mymacspace/netnexus-pidgin/netnexus-adium/NetnexusAccount.h";
+		sourceTree = "<absolute>";
+	};
+	7A5994691085BB9300A68E5C /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A59946A1085BB9300A68E5C /* NetnexusAccountViewController.h */;
+		name = "NetnexusAccountViewController.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 251;
+		vrLoc = 0;
+	};
+	7A59946A1085BB9300A68E5C /* NetnexusAccountViewController.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = NetnexusAccountViewController.h;
+		path = "/Users/mymacspace/netnexus-pidgin/netnexus-adium/NetnexusAccountViewController.h";
+		sourceTree = "<absolute>";
+	};
+	7A59946B1085BB9300A68E5C /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A28E4E01037DB1A005E130E /* OkCupidPlugin.m */;
+		name = "OkCupidPlugin.m: 15";
+		rLen = 0;
+		rLoc = 214;
+		rType = 0;
+		vrLen = 260;
+		vrLoc = 0;
+	};
+	7A59946C1085BB9300A68E5C /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A6FCB121038156A00D8926C /* OkCupidService.h */;
+		name = "OkCupidService.h: 9";
+		rLen = 13;
+		rLoc = 156;
+		rType = 0;
+		vrLen = 228;
+		vrLoc = 0;
+	};
+	7A59946E1085BB9300A68E5C /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A6FCC4010381ECA00D8926C /* AdiumOkCupidAccount.h */;
+		name = "AdiumOkCupidAccount.h: 11";
+		rLen = 15;
+		rLoc = 229;
+		rType = 0;
+		vrLen = 256;
+		vrLoc = 0;
+	};
+	7A59946F1085BB9300A68E5C /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A6FCC4110381ECA00D8926C /* AdiumOkCupidAccount.m */;
+		name = "AdiumOkCupidAccount.m: 8";
+		rLen = 32;
+		rLoc = 151;
+		rType = 0;
+		vrLen = 767;
+		vrLoc = 414;
+	};
+	7A5994701085BB9300A68E5C /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A6FCC3D10381DCE00D8926C /* OkCupidAccountViewController.m */;
+		name = "OkCupidAccountViewController.m: 13";
+		rLen = 0;
+		rLoc = 249;
+		rType = 0;
+		vrLen = 255;
+		vrLoc = 0;
+	};
+	7A5994711085BB9300A68E5C /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A6FCC3C10381DCE00D8926C /* OkCupidAccountViewController.h */;
+		name = "OkCupidAccountViewController.h: 11";
+		rLen = 23;
+		rLoc = 246;
+		rType = 0;
+		vrLen = 281;
+		vrLoc = 0;
+	};
+	7A6FCB121038156A00D8926C /* OkCupidService.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {438, 514}}";
+			sepNavSelRange = "{156, 13}";
+			sepNavVisRange = "{0, 228}";
+		};
+	};
+	7A6FCB131038156A00D8926C /* OkCupidService.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {572, 1300}}";
+			sepNavSelRange = "{950, 51}";
+			sepNavVisRange = "{951, 815}";
+		};
+	};
+	7A6FCC06103819C600D8926C /* AIAdiumProtocol.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = AIAdiumProtocol.h;
+		path = /Users/mymacspace/adium/Build/Release/Adium.framework/Headers/AIAdiumProtocol.h;
+		sourceTree = "<absolute>";
+	};
+	7A6FCC3C10381DCE00D8926C /* OkCupidAccountViewController.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {438, 514}}";
+			sepNavSelRange = "{246, 23}";
+			sepNavVisRange = "{0, 281}";
+		};
+	};
+	7A6FCC3D10381DCE00D8926C /* OkCupidAccountViewController.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {438, 514}}";
+			sepNavSelRange = "{249, 0}";
+			sepNavVisRange = "{0, 255}";
+			sepNavWindowFrame = "{{87, 415}, {584, 458}}";
+		};
+	};
+	7A6FCC4010381ECA00D8926C /* AdiumOkCupidAccount.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {438, 514}}";
+			sepNavSelRange = "{229, 15}";
+			sepNavVisRange = "{0, 256}";
+		};
+	};
+	7A6FCC4110381ECA00D8926C /* AdiumOkCupidAccount.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {859, 819}}";
+			sepNavSelRange = "{376, 0}";
+			sepNavVisRange = "{390, 791}";
+		};
+	};
+	7A6FCC5210381F8100D8926C /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A28E4DA1037DAFD005E130E /* okc_messages.h */;
+		name = "okc_messages.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 767;
+		vrLoc = 0;
+	};
+	7A6FCC6D103D57FF00D8926C /* okcupid-small.png */ = {
+		uiCtxt = {
+			sepNavWindowFrame = "{{77, 415}, {584, 458}}";
+		};
+	};
+	7A6FCC88103D5C9000D8926C /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 7A6FCC6D103D57FF00D8926C /* okcupid-small.png */;
+	};
+	7A6FCC89103D5C9000D8926C /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 7A6FCC71103D57FF00D8926C /* okcupid.png */;
+	};
+	7A965D1111717B4A0081263B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A28E4D71037DAFD005E130E /* okc_connection.c */;
+		name = "okc_connection.c: 609";
+		rLen = 0;
+		rLoc = 17459;
+		rType = 0;
+		vrLen = 1259;
+		vrLoc = 93;
+	};
+	7A965D1211717B4A0081263B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A28E4D41037DAFD005E130E /* libokcupid.h */;
+		name = "libokcupid.h: 82";
+		rLen = 84;
+		rLoc = 2153;
+		rType = 0;
+		vrLen = 1042;
+		vrLoc = 1656;
+	};
+	7ABA2BCC1057B47E00E313CD /* glibconfig.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = glibconfig.h;
+		path = /Users/mymacspace/adium/Frameworks/libglib.framework/Headers/glibconfig.h;
+		sourceTree = "<absolute>";
+	};
+	7ABA2BFC1057B66500E313CD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7A02F235103812BC00319294 /* gutils.h */;
+		name = "gutils.h: 294";
+		rLen = 42;
+		rLoc = 10548;
+		rType = 0;
+		vrLen = 569;
+		vrLoc = 10237;
+	};
+	7ABA2BFD1057B66500E313CD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7ABA2BCC1057B47E00E313CD /* glibconfig.h */;
+		name = "glibconfig.h: 6";
+		rLen = 41;
+		rLoc = 102;
+		rType = 0;
+		vrLen = 150;
+		vrLoc = 0;
+	};
+	7AC6F272103D5DB300E4BFDB /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7AC6F273103D5DB300E4BFDB /* CBPurpleAccount.h */;
+		name = "CBPurpleAccount.h: 30";
+		rLen = 59;
+		rLoc = 1296;
+		rType = 0;
+		vrLen = 516;
+		vrLoc = 1295;
+	};
+	7AC6F273103D5DB300E4BFDB /* CBPurpleAccount.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = CBPurpleAccount.h;
+		path = /Users/mymacspace/adium/Build/Release/AdiumLibpurple.framework/Versions/A/Headers/CBPurpleAccount.h;
+		sourceTree = "<absolute>";
+	};
+	7AC6F274103D5DB300E4BFDB /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7AC6F275103D5DB300E4BFDB /* AIAbstractAccount.h */;
+		name = "AIAbstractAccount.h: 31";
+		rLen = 48;
+		rLoc = 1284;
+		rType = 0;
+		vrLen = 863;
+		vrLoc = 979;
+	};
+	7AC6F275103D5DB300E4BFDB /* AIAbstractAccount.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = AIAbstractAccount.h;
+		path = /Users/mymacspace/adium/Build/Release/Adium.framework/Versions/A/Headers/AIAbstractAccount.h;
+		sourceTree = "<absolute>";
+	};
+	7AC750DB1122B5A100659758 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 089C167EFE841241C02AAC07 /* English */;
+		name = "InfoPlist.strings: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 45;
+		vrLoc = 0;
+	};
+	7AC7510D1122B9DD00659758 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7AC7510E1122B9DD00659758 /* json-types.h */;
+		name = "json-types.h: 123";
+		rLen = 70;
+		rLoc = 4250;
+		rType = 0;
+		vrLen = 2749;
+		vrLoc = 3339;
+	};
+	7AC7510E1122B9DD00659758 /* json-types.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = "json-types.h";
+		path = "/Users/mymacspace/adium/Frameworks/libjson-glib.framework/Versions/1.0.0/Headers/json-glib/json-types.h";
+		sourceTree = "<absolute>";
+	};
+	7AC7511C1122BA5300659758 /* json-glib.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = "json-glib.h";
+		path = "/Users/mymacspace/adium/Frameworks/libjson-glib.framework/Headers/json-glib.h";
+		sourceTree = "<absolute>";
+	};
+	7AC7511F1122BA5C00659758 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7AC7511C1122BA5300659758 /* json-glib.h */;
+		name = "json-glib.h: 29";
+		rLen = 0;
+		rLoc = 955;
+		rType = 0;
+		vrLen = 1233;
+		vrLoc = 0;
+	};
+	8D5B49AC048680CD000E48DA /* okcupid-adium */ = {
+		activeExec = 0;
+	};
+}
