@@ -28,15 +28,19 @@ void okc_blist_wink_buddy(PurpleBlistNode *node, gpointer data)
 	PurpleBuddy *buddy;
 	OkCupidAccount *oca;
 	gchar *postdata;
+	PurpleConnection *pc;
 	
 	if(!PURPLE_BLIST_NODE_IS_BUDDY(node))
 		return;
 	buddy = (PurpleBuddy *) node;
-	if (!buddy || !buddy->account || !buddy->account->gc)
+	if (!buddy || !buddy->account)
 		return;
-	oca = buddy->account->gc->proto_data;
-	if (!oca)
+	
+	pc = purple_account_get_connection(buddy->account);
+	if (!pc || !pc->proto_data)
 		return;
+
+	oca = pc->proto_data;
 	
 	postdata = g_strdup_printf("woo=1&u=%s&ajax=1", purple_url_encode(buddy->name));
 	
