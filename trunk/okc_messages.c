@@ -282,7 +282,7 @@ okc_get_stalkers(OkCupidAccount *oca)
 	for(l = buddies; l; l = l->next)
 	{
 		buddy = l->data;
-		if (buddy->node.flags | PURPLE_BLIST_NODE_FLAG_NO_SAVE)
+		if (buddy->node.flags & PURPLE_BLIST_NODE_FLAG_NO_SAVE)
 		{
 			// A temp buddy? They're a stalker!
 			g_string_append_printf(stalkers, "%s,", buddy->name);
