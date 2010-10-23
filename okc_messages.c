@@ -160,14 +160,14 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 				OkCupidBuddy *obuddy = pbuddy->proto_data;
 				if (obuddy == NULL)
 				{
-					gchar *buddy_icon_url;
+					const gchar *buddy_icon_url;
 					
 					obuddy = g_new0(OkCupidBuddy, 1);
 					obuddy->buddy = pbuddy;
 					obuddy->oca = oca;
 					
 					// load the old buddy icon url from the icon 'checksum'
-					buddy_icon_url = (char *)purple_buddy_icons_get_checksum_for_user(pbuddy);
+					buddy_icon_url = purple_buddy_icons_get_checksum_for_user(pbuddy);
 					if (buddy_icon_url != NULL)
 						obuddy->thumb_url = g_strdup(buddy_icon_url);
 					
@@ -175,11 +175,16 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 				}			
 				if (!obuddy->thumb_url || !g_str_equal(obuddy->thumb_url, buddy_icon))
 				{
+					gchar *host, *path;
+					
 					g_free(obuddy->thumb_url);
 					obuddy->thumb_url = purple_strreplace(buddy_icon, "/60x60/", "/256x256/");
-					if (g_str_has_prefix(buddy_icon, "http://k2.cdn.okcimg.com/"))
-						buddy_icon = &buddy_icon[24];
-					okc_post_or_get(oca, OKC_METHOD_GET, "k2.cdn.okcimg.com", buddy_icon, NULL, okc_buddy_icon_cb, g_strdup(buddy_name), FALSE);
+					
+					purple_url_parse(obuddy->thumb_url, &host, NULL, &path, NULL, NULL);
+					okc_post_or_get(oca, OKC_METHOD_GET, host, path, NULL, okc_buddy_icon_cb, g_strdup(buddy_name), FALSE);
+					
+					g_free(host);
+					g_free(path);
 				}
 			}
 		}

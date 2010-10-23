@@ -119,11 +119,16 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 	}	
 	if (!obuddy->thumb_url || !g_str_equal(obuddy->thumb_url, buddy_icon))
 	{
+		gchar *host, *path;
+		
 		g_free(obuddy->thumb_url);
 		obuddy->thumb_url = purple_strreplace(buddy_icon, "/60x60/", "/256x256/");
-		if (g_str_has_prefix(buddy_icon, "http://k2.cdn.okcimg.com/"))
-			buddy_icon = &buddy_icon[24];
-		okc_post_or_get(oca, OKC_METHOD_GET, "k2.cdn.okcimg.com", buddy_icon, NULL, okc_buddy_icon_cb, g_strdup(username), FALSE);
+		
+		purple_url_parse(obuddy->thumb_url, &host, NULL, &path, NULL, NULL);
+		okc_post_or_get(oca, OKC_METHOD_GET, host, path, NULL, okc_buddy_icon_cb, g_strdup(username), FALSE);
+		
+		g_free(host);
+		g_free(path);
 	}
 
 	purple_notify_user_info_add_section_break(user_info);
