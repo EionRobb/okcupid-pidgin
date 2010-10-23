@@ -239,7 +239,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 				//someone looked at the profile page (ie 'stalked' the user)
 				const gchar *buddy_name = json_node_get_string(json_object_get_member(event, "from"));
 				PurpleBuddy *pbuddy = purple_find_buddy(oca->account, buddy_name);
-				gchat *stalk_message = g_strdup_printf("%s just viewed your profile", buddy_name);
+				gchar *stalk_message = g_strdup_printf("%s just viewed your profile", buddy_name);
 
 				serv_got_im(oca->pc, buddy_name, stalk_message, PURPLE_MESSAGE_SYSTEM, time(NULL));
 				g_free(stalk_message);
@@ -268,25 +268,57 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 	okc_get_new_messages(oca);
 }
 
+gchar *
+okc_get_stalkers(OkCupidAccount *oca)
+{
+	GString *stalkers;
+	GSList *buddies;
+	GSList *l;
+	PurpleBuddy *buddy;
+	
+	buddies = purple_find_buddies(oca->account, NULL);
+	stalkers = g_string_new(NULL);
+	
+	for(l = buddies; l; l = l->next)
+	{
+		buddy = l->data;
+		if (buddy->node.flags | PURPLE_BLIST_NODE_FLAG_NO_SAVE)
+		{
+			// A temp buddy? They're a stalker!
+			g_string_append_printf(stalkers, "%s,", buddy->name);
+		}
+	}
+	g_slist_free(buddies);
+	
+	return g_string_free(stalkers, FALSE);
+}
+
 void okc_get_new_messages_now(OkCupidAccount *oca)
 {
 	gchar *fetch_url;
+	gchar *stalkers;
 	purple_debug_info("okcupid", "getting new messages now\n");
+
+	stalkers = okc_get_stalkers(oca);
 
 	fetch_url = g_strdup_printf("/instantevents?rand=0.%u&server_seqid=%u&server_gmt=%u&"
 					"load_thumbnails=1&buddylist=1&"
-					"show_offline=1&num_unread=1&im_status=1", 
-					g_random_int(), oca->server_seqid, oca->server_gmt);
+					"show_offline=1&num_unread=1&im_status=1&"
+					"usernames=%s", 
+					g_random_int(), oca->server_seqid, oca->server_gmt,
+					stalkers);
 
 	okc_post_or_get(oca, OKC_METHOD_GET, NULL, fetch_url, NULL, got_new_messages, oca->pc, FALSE);
 
 	g_free(fetch_url);
+	g_free(stalkers);
 }
 
 gboolean okc_get_new_messages(OkCupidAccount *oca)
 {
 	time_t now;
 	gchar *fetch_url;
+	gchar *stalkers;
 
 	oca->new_messages_check_timer = 0;
 
@@ -307,16 +339,19 @@ gboolean okc_get_new_messages(OkCupidAccount *oca)
 
 	purple_debug_info("okcupid", "getting new messages\n");
 
+	stalkers = okc_get_stalkers(oca);
 	fetch_url = g_strdup_printf("/instantevents?rand=0.%u&server_seqid=%u&server_gmt=%u&"
 					"load_thumbnails=1&do_event_poll=1&buddylist=1&"
 					"show_offline=1&num_unread=1&im_status=1&"
-					"do_post_read=1", 
-					g_random_int(), oca->server_seqid, oca->server_gmt);
+					"do_post_read=1&usernames=%s", 
+					g_random_int(), oca->server_seqid, oca->server_gmt,
+					stalkers);
 
 	okc_post_or_get(oca, OKC_METHOD_GET, NULL, fetch_url, NULL, got_new_messages, oca->pc, TRUE);
 	oca->last_messages_download_time = now;
 
 	g_free(fetch_url);
+	g_free(stalkers);
 
 	return FALSE;
 }
