@@ -234,8 +234,10 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 				//someone looked at the profile page (ie 'stalked' the user)
 				const gchar *buddy_name = json_node_get_string(json_object_get_member(event, "from"));
 				PurpleBuddy *pbuddy = purple_find_buddy(oca->account, buddy_name);
+				gchat *stalk_message = g_strdup_printf("%s just viewed your profile", buddy_name);
 
-				//TODO: Update buddy message to say 'stalked' and/or open a conversation window with the stalker and/or put in a notification into pidgin's notification area
+				serv_got_im(oca->pc, buddy_name, stalk_message, PURPLE_MESSAGE_SYSTEM, time(NULL));
+				g_free(stalk_message);
 			}
 		}
 		g_list_free(event_list);
