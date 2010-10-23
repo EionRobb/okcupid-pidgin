@@ -20,6 +20,10 @@
 
 #include "okc_connection.h"
 
+#if !GLIB_CHECK_VERSION (2, 22, 0)
+#define g_hostname_is_ip_address(hostname) (g_ascii_isdigit(hostname[0]) && g_strstr_len(hostname, 4, "."))
+#endif
+
 static void okc_attempt_connection(OkCupidConnection *);
 static void okc_next_connection(OkCupidAccount *oca);
 
@@ -565,7 +569,7 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 	 *       the TTL returned by the DNS server.  We should expire things
 	 *       from the cache after some amount of time.
 	 */
-	if (!is_proxy)
+	if (!is_proxy && !g_hostname_is_ip_address(host))
 	{
 		/* Don't do this for proxy connections, since proxies do the DNS lookup */
 		gchar *host_ip;
