@@ -123,16 +123,21 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 	}	
 	if (!obuddy->thumb_url || !g_str_equal(obuddy->thumb_url, buddy_icon))
 	{
-		gchar *host, *path;
+		gchar *host, *path, *path2;
 		
 		g_free(obuddy->thumb_url);
 		obuddy->thumb_url = purple_strreplace(buddy_icon, "/60x60/", "/256x256/");
 		
 		purple_url_parse(obuddy->thumb_url, &host, NULL, &path, NULL, NULL);
-		okc_post_or_get(oca, OKC_METHOD_GET, host, path, NULL, okc_buddy_icon_cb, g_strdup(username), FALSE);
+		if (path[0] != '/')
+			path2 = g_strdup_printf("/%s", path);
+		else
+			path2 = g_strdup(path);
+		okc_post_or_get(oca, OKC_METHOD_GET, host, path2, NULL, okc_buddy_icon_cb, g_strdup(username), FALSE);
 		
 		g_free(host);
 		g_free(path);
+		g_free(path2);
 	}
 
 	purple_notify_user_info_add_section_break(user_info);
