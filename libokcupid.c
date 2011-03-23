@@ -296,6 +296,11 @@ static void okc_buddy_free(PurpleBuddy *buddy)
 	}
 }
 
+void okc_fake_group_buddy(PurpleConnection *pc, const char *who, const char *old_group, const char *new_group)
+{
+	/* Do nuffink, so that buddies aren't deleted! */
+}
+
 /******************************************************************************/
 /* Plugin functions */
 /******************************************************************************/
@@ -372,7 +377,7 @@ static PurplePluginProtocolInfo prpl_info = {
 	NULL,                   /* get_cb_info */
 	NULL,                   /* get_cb_away */
 	NULL,                   /* alias_buddy */
-	NULL,                   /* group_buddy */
+	okc_fake_group_buddy,   /* group_buddy */
 	NULL,                   /* rename_group */
 	okc_buddy_free,         /* buddy_free */
 	NULL,                   /* convo_closed */
