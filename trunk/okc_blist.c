@@ -83,10 +83,19 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 		purple_notify_userinfo(oca->pc, username, user_info, NULL, NULL);
 		purple_notify_user_info_destroy(user_info);
 		g_free(username);
-		return;	
+		return;
 	}
 	root = json_parser_get_root(parser);
 	info = json_node_get_object(root);
+	
+	if (json_object_get_member(info, "error"))
+	{
+		purple_debug_error("okcupid", "got_info error\n");
+		purple_notify_userinfo(oca->pc, username, user_info, NULL, NULL);
+		purple_notify_user_info_destroy(user_info);
+		g_free(username);
+		return;
+	}
 	
 	value_tmp = g_strdup_printf("%" G_GINT64_FORMAT " years", json_node_get_int(json_object_get_member(info, "age")));
 	purple_notify_user_info_add_pair(user_info, _("Age"), value_tmp);
