@@ -470,6 +470,12 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 
 	/* TODO: Fix keepalive and use it as much as possible */
 	keepalive = FALSE;
+	
+	if (purple_account_get_bool(oca->account, "force_https", TRUE) && !(method & OKC_METHOD_SSL) &&
+			(!host || g_str_equal(host, "www.okcupid.com") || g_str_equal(host, "api.okcupid.com")))
+	{
+		method |= OKC_METHOD_SSL;
+	}
 
 	if (method & OKC_METHOD_SSL)
 		host = "www.okcupid.com";
