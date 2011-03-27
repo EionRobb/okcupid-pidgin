@@ -336,7 +336,7 @@ static void plugin_init(PurplePlugin *plugin)
 
 static PurplePluginProtocolInfo prpl_info = {
 	/* options */
-	OPT_PROTO_UNIQUE_CHATNAME,
+	OPT_PROTO_MAIL_CHECK,
 
 	NULL,                   /* user_splits */
 	NULL,                   /* protocol_options */

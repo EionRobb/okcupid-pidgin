@@ -44,7 +44,7 @@ install:
 	cp okcupid22.png /usr/share/pixmaps/pidgin/protocols/22/okcupid.png
 	cp okcupid48.png /usr/share/pixmaps/pidgin/protocols/48/okcupid.png
 
-installers:	pidgin-facebookchat.exe pidgin-facebookchat.deb pidgin-facebookchat.tar.bz2
+installers:	okcupid-pidgin.exe
 
 clean:
 	rm -f libfacebook.so libfacebook.dll libfacebook64.so libfacebookarm.so libfacebookppc.so pidgin-facebookchat.exe pidgin-facebookchat.deb pidgin-facebookchat.tar.bz2 pidgin-facebookchat-source.tar.bz2
