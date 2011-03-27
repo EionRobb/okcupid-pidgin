@@ -194,6 +194,13 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 					g_free(path);
 					g_free(path2);
 				}
+				if (obuddy->status_cache == NULL && json_object_has_member(person, "age"))
+				{
+					gint age = json_node_get_int(json_object_get_member(person, "age"));
+					const gchar *gender = json_node_get_string(json_object_get_member(person, "gender"));
+					const gchar *location = json_node_get_string(json_object_get_member(person, "location"));
+					obuddy->status_cache = g_strdup_printf("%d / %s / %s", age, gender, location );
+				}
 			}
 		}
 		g_list_free(people_list);

@@ -95,6 +95,7 @@ struct _OkCupidBuddy {
 	OkCupidAccount *oca;
 	PurpleBuddy *buddy;
 	gchar *thumb_url;
+	gchar *status_cache;
 };
 
 gchar *okc_strdup_withhtml(const gchar *src);
