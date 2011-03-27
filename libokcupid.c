@@ -291,6 +291,7 @@ static void okc_buddy_free(PurpleBuddy *buddy)
 	{
 		buddy->proto_data = NULL;
 
+		g_free(obuddy->status_cache);
 		g_free(obuddy->thumb_url);
 		g_free(obuddy);
 	}
@@ -299,6 +300,16 @@ static void okc_buddy_free(PurpleBuddy *buddy)
 void okc_fake_group_buddy(PurpleConnection *pc, const char *who, const char *old_group, const char *new_group)
 {
 	/* Do nuffink, so that buddies aren't deleted! */
+}
+
+gchar *okc_status_text(PurpleBuddy *buddy)
+{
+	OkCupidBuddy *obuddy = buddy->proto_data;
+	if (obuddy != NULL && obuddy->status_cache != NULL)
+	{
+		return g_strdup(obuddy->status_cache);
+	}
+	return NULL;
 }
 
 /******************************************************************************/
@@ -344,7 +355,7 @@ static PurplePluginProtocolInfo prpl_info = {
 	/*{"jpg", 0, 0, 50, 50, -1, PURPLE_ICON_SCALE_SEND}*/, /* icon_spec */
 	okc_list_icon,          /* list_icon */
 	NULL,                   /* list_emblems */
-	NULL,                   /* status_text */
+	okc_status_text,        /* status_text */
 	NULL,                   /* tooltip_text */
 	okc_statuses,           /* status_types */
 	okc_blist_node_menu,    /* blist_node_menu */
