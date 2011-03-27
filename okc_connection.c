@@ -575,7 +575,7 @@ void okc_post_or_get(OkCupidAccount *oca, OkCupidMethod method,
 	 *       the TTL returned by the DNS server.  We should expire things
 	 *       from the cache after some amount of time.
 	 */
-	if (!is_proxy && !g_hostname_is_ip_address(host))
+	if (!is_proxy && !g_hostname_is_ip_address(host) && !(method & OKC_METHOD_SSL))
 	{
 		/* Don't do this for proxy connections, since proxies do the DNS lookup */
 		gchar *host_ip;
