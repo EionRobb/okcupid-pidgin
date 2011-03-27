@@ -312,6 +312,15 @@ gchar *okc_status_text(PurpleBuddy *buddy)
 	return NULL;
 }
 
+void okc_tooltip_text(PurpleBuddy *buddy, PurpleNotifyUserInfo *user_info, gboolean full)
+{
+	OkCupidBuddy *obuddy = buddy->proto_data;
+	if (obuddy != NULL && obuddy->status_cache != NULL)
+	{
+		purple_notify_user_info_add_pair(user_info, NULL, obuddy->status_cache);
+	}
+}
+
 /******************************************************************************/
 /* Plugin functions */
 /******************************************************************************/
@@ -356,7 +365,7 @@ static PurplePluginProtocolInfo prpl_info = {
 	okc_list_icon,          /* list_icon */
 	NULL,                   /* list_emblems */
 	okc_status_text,        /* status_text */
-	NULL,                   /* tooltip_text */
+	okc_tooltip_text,       /* tooltip_text */
 	okc_statuses,           /* status_types */
 	okc_blist_node_menu,    /* blist_node_menu */
 	NULL,                   /* chat_info */
