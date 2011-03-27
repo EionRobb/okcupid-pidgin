@@ -256,7 +256,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 		g_list_free(event_list);
 	}
 	
-	if (unread_message_count != oca->last_message_count)
+	if (unread_message_count != oca->last_message_count && purple_account_get_check_mail(pc->account))
 	{
 		oca->last_message_count = unread_message_count;
 		if (unread_message_count > 0)
