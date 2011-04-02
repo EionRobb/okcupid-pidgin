@@ -116,40 +116,43 @@ void okc_got_info(OkCupidAccount *oca, gchar *data,
 	
 	const gchar *buddy_icon = json_node_get_string(json_object_get_member(info, "thumbnail"));
 	PurpleBuddy *buddy = purple_find_buddy(oca->account, username);
-	OkCupidBuddy *obuddy = buddy->proto_data;
-	if (obuddy == NULL)
+	if (buddy != NULL)
 	{
-		obuddy = g_new0(OkCupidBuddy, 1);
-		obuddy->buddy = buddy;
-		obuddy->oca = oca;
-		
-		// load the old buddy icon url from the icon 'checksum'
-		const gchar *buddy_icon_url = purple_buddy_icons_get_checksum_for_user(buddy);
-		if (buddy_icon_url != NULL)
-			obuddy->thumb_url = g_strdup(buddy_icon_url);
-		
-		buddy->proto_data = obuddy;			
-	}
-	if (!obuddy->thumb_url || !g_str_equal(obuddy->thumb_url, buddy_icon))
-	{
-		gchar *host, *path, *path2;
-		gchar *large_image_url;
-		
-		g_free(obuddy->thumb_url);
-		obuddy->thumb_url = g_strdup(buddy_icon);
-		large_image_url = purple_strreplace(buddy_icon, "/60x60/", "/256x256/");
-		
-		purple_url_parse(large_image_url, &host, NULL, &path, NULL, NULL);
-		g_free(large_image_url);
-		if (path[0] != '/')
-			path2 = g_strdup_printf("/%s", path);
-		else
-			path2 = g_strdup(path);
-		okc_post_or_get(oca, OKC_METHOD_GET, host, path2, NULL, okc_buddy_icon_cb, g_strdup(username), FALSE);
-		
-		g_free(host);
-		g_free(path);
-		g_free(path2);
+		OkCupidBuddy *obuddy = buddy->proto_data;
+		if (obuddy == NULL)
+		{
+			obuddy = g_new0(OkCupidBuddy, 1);
+			obuddy->buddy = buddy;
+			obuddy->oca = oca;
+			
+			// load the old buddy icon url from the icon 'checksum'
+			const gchar *buddy_icon_url = purple_buddy_icons_get_checksum_for_user(buddy);
+			if (buddy_icon_url != NULL)
+				obuddy->thumb_url = g_strdup(buddy_icon_url);
+			
+			buddy->proto_data = obuddy;			
+		}
+		if (!obuddy->thumb_url || !g_str_equal(obuddy->thumb_url, buddy_icon))
+		{
+			gchar *host, *path, *path2;
+			gchar *large_image_url;
+			
+			g_free(obuddy->thumb_url);
+			obuddy->thumb_url = g_strdup(buddy_icon);
+			large_image_url = purple_strreplace(buddy_icon, "/60x60/", "/256x256/");
+			
+			purple_url_parse(large_image_url, &host, NULL, &path, NULL, NULL);
+			g_free(large_image_url);
+			if (path[0] != '/')
+				path2 = g_strdup_printf("/%s", path);
+			else
+				path2 = g_strdup(path);
+			okc_post_or_get(oca, OKC_METHOD_GET, host, path2, NULL, okc_buddy_icon_cb, g_strdup(username), FALSE);
+			
+			g_free(host);
+			g_free(path);
+			g_free(path2);
+		}
 	}
 
 	purple_notify_user_info_add_section_break(user_info);
