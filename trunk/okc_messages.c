@@ -124,7 +124,8 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			JsonObject *person = json_node_get_object(currentNode);
 			
 			if (!json_node_get_int(json_object_get_member(person, "is_buddy")) && 
-				!purple_account_get_bool(oca->account, "show_stalkers", TRUE))
+					(!purple_account_get_bool(oca->account, "show_stalkers", TRUE) ||
+						json_object_get_int(json_object_get_member(person, "open_connection")))
 			{
 				continue;
 			}
