@@ -67,6 +67,7 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 		gsize data_len, gpointer userdata)
 {
 	PurpleConnection *pc = userdata;
+	PurpleGroup *pgroup = purple_find_group("OkCupid");
 
 	/* NULL data will crash on Windows */
 	if (data == NULL)
@@ -139,9 +140,13 @@ void got_new_messages(OkCupidAccount *oca, gchar *data,
 			PurpleBuddy *pbuddy = purple_find_buddy(oca->account, buddy_name);
 			if (!pbuddy)
 			{
+				if (pgroup == NULL)
+				{
+					pgroup = purple_group_new("OkCupid");
+				}
 				//Not everyone we talk to will be on our buddylist
 				pbuddy = purple_buddy_new(oca->account, buddy_name, NULL);
-				purple_blist_add_buddy(pbuddy, NULL, NULL, NULL);
+				purple_blist_add_buddy(pbuddy, NULL, pgroup, NULL);
 			}
 			if (pbuddy != NULL)
 			{
